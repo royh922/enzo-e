@@ -1,0 +1,13 @@
+{
+	"revision" : 0,
+	"rules" : 
+	[
+		{
+			"outputs" : [],
+			"primary-output" : "src/Cello/CMakeFiles/data.dir/field_face_store.F.o",
+			"provides" : [],
+			"requires" : []
+		}
+	],
+	"version" : 0
+}

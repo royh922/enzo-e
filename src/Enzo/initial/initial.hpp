@@ -63,6 +63,7 @@ extern "C" void FORTRAN_NAME(turboinit2d)
 #include "Enzo/initial/EnzoInitialIsolatedGalaxy.hpp"
 #include "Enzo/initial/EnzoInitialBurkertBodenheimer.hpp"
 #include "Enzo/initial/EnzoInitialShuCollapse.hpp"
+#include "Enzo/initial/EnzoInitialKelvinHelmholtz.hpp"
 
 #include "Enzo/initial/obsolete/EnzoInitialPm.hpp"
 

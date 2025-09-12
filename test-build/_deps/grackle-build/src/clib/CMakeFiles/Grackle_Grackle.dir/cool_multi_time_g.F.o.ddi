@@ -1,0 +1,13 @@
+{
+	"revision" : 0,
+	"rules" : 
+	[
+		{
+			"outputs" : [],
+			"primary-output" : "_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/cool_multi_time_g.F.o",
+			"provides" : [],
+			"requires" : []
+		}
+	],
+	"version" : 0
+}

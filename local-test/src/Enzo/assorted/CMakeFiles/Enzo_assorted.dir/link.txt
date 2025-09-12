@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEnzo_assorted.a CMakeFiles/Enzo_assorted.dir/EnzoMethodHeat.cpp.o CMakeFiles/Enzo_assorted.dir/EnzoMethodM1Closure.cpp.o CMakeFiles/Enzo_assorted.dir/EnzoMethodTurbulence.cpp.o
+/usr/bin/ranlib libEnzo_assorted.a

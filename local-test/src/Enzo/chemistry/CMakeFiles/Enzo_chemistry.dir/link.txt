@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEnzo_chemistry.a CMakeFiles/Enzo_chemistry.dir/EnzoComputeCoolingTime.cpp.o CMakeFiles/Enzo_chemistry.dir/EnzoMethodGrackle.cpp.o CMakeFiles/Enzo_chemistry.dir/GrackleChemistryData.cpp.o CMakeFiles/Enzo_chemistry.dir/GrackleFacade.cpp.o
+/usr/bin/ranlib libEnzo_chemistry.a

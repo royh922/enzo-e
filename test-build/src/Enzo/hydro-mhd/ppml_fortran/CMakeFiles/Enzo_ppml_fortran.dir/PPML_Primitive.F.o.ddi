@@ -1,0 +1,13 @@
+{
+	"revision" : 0,
+	"rules" : 
+	[
+		{
+			"outputs" : [],
+			"primary-output" : "src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_Primitive.F.o",
+			"provides" : [],
+			"requires" : []
+		}
+	],
+	"version" : 0
+}

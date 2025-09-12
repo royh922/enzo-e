@@ -1,0 +1,13 @@
+{
+	"revision" : 0,
+	"rules" : 
+	[
+		{
+			"outputs" : [],
+			"primary-output" : "src/Enzo/cosmology/CMakeFiles/Enzo_cosmology.dir/expand_terms.F.o",
+			"provides" : [],
+			"requires" : []
+		}
+	],
+	"version" : 0
+}

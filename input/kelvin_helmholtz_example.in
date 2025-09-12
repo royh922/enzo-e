@@ -1,0 +1,127 @@
+# Kelvin-Helmholtz Instability Test Problem
+# Based on the Athena++ KH instability test case
+# Simulates cylindrical shear flow in hot diffuse medium
+
+# Domain and mesh settings
+Domain {
+    lower = [-4.0, -2.0, -2.0];  # Domain bounds
+    upper = [ 4.0,  2.0,  2.0];
+}
+
+Mesh {
+    root_rank = 3;               # 3D simulation
+    root_size = [256, 128, 128];    # Grid resolution
+    root_blocks = [8, 4, 4];     # Block structure
+}
+
+Physics {
+    list = ["fluid_props"];
+    fluid_props {
+
+        dual_energy { type = "disabled"; }
+
+        eos {gamma = 1.666666666667;} # Adiabatic index (5/3)
+
+        floors {
+            density  = 1e-10;
+            pressure = 1e-10;
+        }
+
+        mol_weight = 0.6; # Fully ionized Hydrogen 
+    }
+}
+
+# Field configuration
+Field {
+    list = ["density", "pressure", "velocity_x", "velocity_y", "velocity_z", 
+            "total_energy", "internal_energy"];
+    ghost_depth = 4;               # Ghost zones for boundary conditions
+}
+
+# Kelvin-Helmholtz initial conditions
+Initial {
+    list = ["kelvin_helmholtz"];
+    
+    kelvin_helmholtz {
+        # Basic fluid parameters
+        rho_0 = 1.0;                    # Background (hot gas) density
+        pgas_0 = 1.0;                   # Background pressure (constant)
+        density_contrast = 100.0;        # Cold gas density = rho_0 * density_contrast
+        gamma = 1.66667;                # Adiabatic index
+        
+        # Geometry parameters
+        radius = 0.5;                   # Radius of cylindrical cold gas region
+        smoothing_thickness = 0.05;     # Smoothing thickness for density transition
+        smoothing_thickness_vel = 0.05; # Smoothing thickness for velocity perturbations
+        
+        # Velocity parameters
+        vel_shear = 1.0;                # Shear velocity magnitude
+        vel_pert = 0.1;                 # Perturbation velocity amplitude
+        lambda_pert = 1.0;              # Perturbation wavelength (>0 for sinusoidal, =0 for localized)
+        pert_loc = 0.0;                 # Location of localized perturbation (if lambda_pert = 0)
+        
+        # Optional parameters
+        noisy_ic = false;               # Add random noise to perturbations
+        random_seed = 12345;            # Random seed for noise generation
+        
+        # Magnetic field (optional - uncomment for MHD)
+        # uniform_bfield = [0.1, 0.0, 0.0];  # Uniform magnetic field
+    }
+}
+
+# Boundary conditions
+Boundary { type = "periodic"; }
+
+# Time integration
+Method {
+    list = ["ppm"];
+    
+    ppm {
+        courant = 0.8;
+        diffusion = true;
+        flattening = 3;
+        steepening = true;
+    }
+}
+
+# Time stepping
+Time {
+    time_final = 2.0;               # Final time
+    # time_step_min = 1.0e-8;         # Minimum time step
+}
+
+# Output
+Output {
+#    list = ["image", "hdf5"];
+    list = ["image"];
+
+    image {
+        type = "image";
+        field_list = ["density"];
+        dir = "images";
+        name = ["KH%02d.png", "count"];
+        axis = "y";                    # Slice position in x
+        
+        include "input/Colormap/colormap_greyscale.incl"
+        include "input/Schedule/schedule_cycle_25.incl"
+    }
+
+#    hdf5 {
+#        field_list = ["density", "velocity_x", "velocity_y", "velocity_z"];
+#        name = ["KH%02d.h5", "count"];
+#        type = "data";
+#        include "input/Schedule/schedule_cycle_25.incl"
+#    }
+}
+
+# Stopping criteria
+Stopping {
+    cycle = 1000;                    # Maximum cycles
+    time = 2.0;                      # Maximum time
+}
+
+# Monitor performance
+Monitor {
+    verbose = true;
+    debug = false;
+}

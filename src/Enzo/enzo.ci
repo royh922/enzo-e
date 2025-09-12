@@ -36,6 +36,7 @@ module enzo {
   PUPable EnzoInitialImplosion2;
   PUPable EnzoInitialInclinedWave;
   PUPable EnzoInitialIsolatedGalaxy;
+  PUPable EnzoInitialKelvinHelmholtz;
   PUPable EnzoInitialMergeSinksTest;
   PUPable EnzoInitialMusic;
   PUPable EnzoInitialPm;

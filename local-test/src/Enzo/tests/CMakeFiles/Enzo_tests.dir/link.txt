@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEnzo_tests.a CMakeFiles/Enzo_tests.dir/EnzoInitialAccretionTest.cpp.o CMakeFiles/Enzo_tests.dir/EnzoInitialBBTest.cpp.o CMakeFiles/Enzo_tests.dir/EnzoInitialFeedbackTest.cpp.o CMakeFiles/Enzo_tests.dir/EnzoInitialGrackleTest.cpp.o CMakeFiles/Enzo_tests.dir/EnzoInitialMergeSinksTest.cpp.o CMakeFiles/Enzo_tests.dir/EnzoInitialPpmlTest.cpp.o
+/usr/bin/ranlib libEnzo_tests.a

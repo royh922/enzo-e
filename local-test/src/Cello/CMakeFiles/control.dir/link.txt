@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcontrol.a CMakeFiles/control.dir/control_adapt.cpp.o CMakeFiles/control.dir/control_charm.cpp.o CMakeFiles/control.dir/control_compute.cpp.o CMakeFiles/control.dir/control_initialize.cpp.o CMakeFiles/control.dir/control_output.cpp.o CMakeFiles/control.dir/control_refresh.cpp.o CMakeFiles/control.dir/control_stopping.cpp.o
+/usr/bin/ranlib libcontrol.a

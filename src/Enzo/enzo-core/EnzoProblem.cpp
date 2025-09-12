@@ -243,6 +243,9 @@ Initial * EnzoProblem::create_initial_
   } else if (type == "shu_collapse") {
     initial = new EnzoInitialShuCollapse
       (cycle, time, p_group);
+  } else if (type == "kelvin_helmholtz") {
+    initial = new EnzoInitialKelvinHelmholtz
+      (cycle, time, p_group);
   } else if (type == "bb_test") {
     initial = new EnzoInitialBBTest
       (cycle, time,

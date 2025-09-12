@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEnzo_utils.a CMakeFiles/Enzo_utils.dir/utils.cpp.o CMakeFiles/Enzo_utils.dir/EnzoCenteredFieldRegistry.cpp.o CMakeFiles/Enzo_utils.dir/EnzoComputeCicInterp.cpp.o CMakeFiles/Enzo_utils.dir/EnzoFieldAdaptor.cpp.o
+/usr/bin/ranlib libEnzo_utils.a

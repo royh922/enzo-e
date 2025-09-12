@@ -1,0 +1,31 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/juitenghsu/enzo-e/test-build/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/_deps/grackle-build/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/_deps/grackle-build/src/clib/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/External/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Cello/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/enzo-core/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/assorted/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/chemistry/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/cosmology/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/fluid-props/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/gravity/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/hydro-mhd/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/hydro-mhd/ppm_fortran/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/hydro-mhd/ppml_fortran/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/hydro-mhd/riemann/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/hydro-mhd/toolkit/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/initial/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/inference/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/io/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/mesh/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/particle/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/tests/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/src/Enzo/utils/cmake_install.cmake",
+		"/Users/juitenghsu/enzo-e/test-build/test/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

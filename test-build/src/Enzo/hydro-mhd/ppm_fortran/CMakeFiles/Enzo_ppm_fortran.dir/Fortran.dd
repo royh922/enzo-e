@@ -1,0 +1,59 @@
+ninja_dyndep_version = 1.0
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/calcdiss.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/calc_dt.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/calc_eigen.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/cicinterp.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/cic_deposit.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/cic_interp.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/euler.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/flux_hll.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/flux_hllc.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/flux_twoshock.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/interp1d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/interp2d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/interp3d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/inteuler.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/intpos.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/intprim.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/intvar.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/int_lin3d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/ngpinterp.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/pgas2d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/pgas2d_dual.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/ppm_de.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/tscint1d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/tscint2d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/tscint3d.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/twoshock.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/xeuler_sweep.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/yeuler_sweep.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppm_fortran/CMakeFiles/Enzo_ppm_fortran.dir/zeuler_sweep.F.o: dyndep
+

@@ -1,0 +1,95 @@
+ Boundary {
+     type = "periodic";
+ }
+
+ Domain {
+     lower = [ -4.000000000000000, -2.000000000000000, -2.000000000000000 ];
+     upper = [ 4.000000000000000, 2.000000000000000, 2.000000000000000 ];
+ }
+
+ Field {
+     ghost_depth = 4;
+     list = [ "density", "pressure", "velocity_x", "velocity_y", "velocity_z", "total_energy", "internal_energy" ];
+ }
+
+ Initial {
+     kelvin_helmholtz {
+         density_contrast = 100.0000000000000;
+         gamma = 1.666670000000000;
+         lambda_pert = 1.000000000000000;
+         noisy_ic = false;
+         pert_loc = 0.000000000000000;
+         pgas_0 = 1.000000000000000;
+         radius = 0.5000000000000000;
+         random_seed = 12345;
+         rho_0 = 1.000000000000000;
+         smoothing_thickness = 0.05000000000000000;
+         smoothing_thickness_vel = 0.05000000000000000;
+         vel_pert = 0.1000000000000000;
+         vel_shear = 1.000000000000000;
+     };
+     list = [ "kelvin_helmholtz" ];
+ }
+
+ Mesh {
+     root_blocks = [ 8, 4, 4 ];
+     root_rank = 3;
+     root_size = [ 256, 128, 128 ];
+ }
+
+ Method {
+     list = [ "ppm" ];
+     ppm {
+         courant = 0.8000000000000000;
+         diffusion = true;
+         flattening = 3;
+         steepening = true;
+     };
+ }
+
+ Monitor {
+     debug = false;
+     verbose = true;
+ }
+
+ Output {
+     image {
+         axis = "y";
+         colormap = [ "black", "white" ];
+         dir = "images";
+         field_list = [ "density" ];
+         name = [ "KH%02d.png", "count" ];
+         schedule {
+             step = 25;
+             var = "cycle";
+         };
+         type = "image";
+     };
+     list = [ "image" ];
+ }
+
+ Physics {
+     fluid_props {
+         dual_energy {
+             type = "disabled";
+         };
+         eos {
+             gamma = 1.666666666667000;
+         };
+         floors {
+             density = 1.000000000000000e-10;
+             pressure = 1.000000000000000e-10;
+         };
+         mol_weight = 0.6000000000000000;
+     };
+     list = [ "fluid_props" ];
+ }
+
+ Stopping {
+     cycle = 1000;
+     time = 2.000000000000000;
+ }
+
+ Time {
+     time_final = 2.000000000000000;
+ }

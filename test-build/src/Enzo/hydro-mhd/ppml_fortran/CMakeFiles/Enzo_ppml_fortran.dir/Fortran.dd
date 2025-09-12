@@ -1,0 +1,21 @@
+ninja_dyndep_version = 1.0
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_Conservative.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_HLLD.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_MAIN.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_monot.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_potokz.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_potokx.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_potoky.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_Primitive.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_sub.F.o: dyndep
+
+build src/Enzo/hydro-mhd/ppml_fortran/CMakeFiles/Enzo_ppml_fortran.dir/PPML_TimeStep.F.o: dyndep
+

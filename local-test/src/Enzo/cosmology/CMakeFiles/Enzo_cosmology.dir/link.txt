@@ -1,0 +1,2 @@
+/usr/bin/ar qc libEnzo_cosmology.a CMakeFiles/Enzo_cosmology.dir/EnzoMethodComovingExpansion.cpp.o CMakeFiles/Enzo_cosmology.dir/EnzoMethodCosmology.cpp.o CMakeFiles/Enzo_cosmology.dir/EnzoPhysicsCosmology.cpp.o CMakeFiles/Enzo_cosmology.dir/expand_terms.F.o
+/usr/bin/ranlib libEnzo_cosmology.a

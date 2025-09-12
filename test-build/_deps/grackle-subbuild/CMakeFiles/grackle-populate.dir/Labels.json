@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/CMakeFiles/grackle-populate"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/CMakeFiles/grackle-populate.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/CMakeFiles/grackle-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-build.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-download.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-install.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-test.rule"
+		},
+		{
+			"file" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-subbuild/grackle-populate-prefix/src/grackle-populate-stamp/grackle-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"grackle-populate"
+		],
+		"name" : "grackle-populate"
+	}
+}

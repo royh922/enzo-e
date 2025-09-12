@@ -14,6 +14,7 @@ add_library(Enzo_initial
   EnzoInitialImplosion2.cpp EnzoInitialImplosion2.hpp
   EnzoInitialInclinedWave.cpp EnzoInitialInclinedWave.hpp
   EnzoInitialIsolatedGalaxy.cpp EnzoInitialIsolatedGalaxy.hpp
+  EnzoInitialKelvinHelmholtz.cpp EnzoInitialKelvinHelmholtz.hpp
   EnzoInitialSedovArray2.cpp EnzoInitialSedovArray2.hpp
   EnzoInitialSedovArray3.cpp EnzoInitialSedovArray3.hpp
   EnzoInitialSedovRandom.cpp EnzoInitialSedovRandom.hpp

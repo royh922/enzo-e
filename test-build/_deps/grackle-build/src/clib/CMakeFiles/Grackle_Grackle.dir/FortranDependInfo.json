@@ -1,0 +1,80 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-build/src/clib",
+	"dir-cur-src" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib",
+	"dir-top-bld" : "/Users/juitenghsu/enzo-e/test-build",
+	"dir-top-src" : "/Users/juitenghsu/enzo-e",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"_deps/grackle-build/generated_public_headers",
+		"_deps/grackle-src/src/clib/../include",
+		"_deps/grackle-src/src/clib",
+		"/opt/homebrew/include"
+	],
+	"language" : "Fortran",
+	"linked-target-dirs" : [],
+	"module-dir" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-build/src/clib",
+	"sources" : 
+	{
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/calc_tdust_1d_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/calc_tdust_1d_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/calc_tdust_3d_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/calc_tdust_3d_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/calc_temp1d_cloudy_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/calc_temp1d_cloudy_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/calc_temp_cloudy_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/calc_temp_cloudy_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/cool1d_cloudy_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/cool1d_cloudy_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/cool1d_cloudy_old_tables_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/cool1d_cloudy_old_tables_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/cool1d_multi_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/cool1d_multi_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/cool_multi_time_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/cool_multi_time_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/interpolators_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/interpolators_g.F"
+		},
+		"_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir/solve_rate_cool_g.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/test-build/_deps/grackle-src/src/clib/solve_rate_cool_g.F"
+		}
+	},
+	"submodule-ext" : ".smod",
+	"submodule-sep" : "@"
+}

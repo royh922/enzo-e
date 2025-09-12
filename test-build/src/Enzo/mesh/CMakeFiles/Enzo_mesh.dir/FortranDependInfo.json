@@ -1,0 +1,46 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/Users/juitenghsu/enzo-e/test-build/src/Enzo/mesh",
+	"dir-cur-src" : "/Users/juitenghsu/enzo-e/src/Enzo/mesh",
+	"dir-top-bld" : "/Users/juitenghsu/enzo-e/test-build",
+	"dir-top-src" : "/Users/juitenghsu/enzo-e",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/Users/juitenghsu/enzo-e/src/External",
+		"/Users/juitenghsu/enzo-e/src/Enzo/..",
+		"/Users/juitenghsu/enzo-e/src/Enzo",
+		"/Users/juitenghsu/enzo-e/src/Cello",
+		"src/Cello",
+		"_deps/grackle-build/generated_public_headers",
+		"_deps/grackle-src/src/clib/../include",
+		"_deps/grackle-src/src/clib",
+		"src/Cello/_generated_charm_module_headers",
+		"/Users/juitenghsu/charm/netlrts-darwin-arm8/include",
+		"src/Enzo/_generated_charm_module_headers"
+	],
+	"language" : "Fortran",
+	"linked-target-dirs" : 
+	[
+		"/Users/juitenghsu/enzo-e/test-build/_deps/grackle-build/src/clib/CMakeFiles/Grackle_Grackle.dir",
+		"/Users/juitenghsu/enzo-e/test-build/src/Cello/CMakeFiles/data.dir"
+	],
+	"module-dir" : "/Users/juitenghsu/enzo-e/test-build/src/Enzo/mesh",
+	"sources" : 
+	{
+		"src/Enzo/mesh/CMakeFiles/Enzo_mesh.dir/interpolate.F.o" : 
+		{
+			"language" : "Fortran",
+			"source" : "/Users/juitenghsu/enzo-e/src/Enzo/mesh/interpolate.F"
+		}
+	},
+	"submodule-ext" : ".smod",
+	"submodule-sep" : "@"
+}
