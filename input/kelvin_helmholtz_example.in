@@ -4,14 +4,14 @@
 
 # Domain and mesh settings
 Domain {
-    lower = [-4.0, -2.0, -2.0];  # Domain bounds
-    upper = [ 4.0,  2.0,  2.0];
+    lower = [-16.0, -16.0, -16.0];  # Domain bounds
+    upper = [ 16.0,  16.0,  16.0];
 }
 
 Mesh {
-    root_rank = 3;               # 3D simulation
-    root_size = [256, 128, 128];    # Grid resolution
-    root_blocks = [8, 4, 4];     # Block structure
+    root_rank = 3;            # 3D simulation
+    root_size = [512, 512, 512];    # Grid resolution
+    root_blocks = [8, 8, 8];     # Block structure
 }
 
 Physics {
@@ -19,8 +19,7 @@ Physics {
     fluid_props {
 
         dual_energy { type = "disabled"; }
-
-        eos {gamma = 1.666666666667;} # Adiabatic index (5/3)
+        eos {gamma = 1.666666666667;} # Adiabatic index (5/3) 
 
         floors {
             density  = 1e-10;
@@ -44,18 +43,18 @@ Initial {
     
     kelvin_helmholtz {
         # Basic fluid parameters
-        rho_0 = 1.0;                    # Background (hot gas) density
-        pgas_0 = 1.0;                   # Background pressure (constant)
-        density_contrast = 100.0;        # Cold gas density = rho_0 * density_contrast
+        n_0 = 0.01;                     # Stream Hydrogen number density (cm^-3)
+        density_contrast = 100.0;       # Cold gas density = rho_0 * density_contrast
+        temperature = 1.5;              # Stream temperature (10^4 K)
         gamma = 1.66667;                # Adiabatic index
         
         # Geometry parameters
-        radius = 0.5;                   # Radius of cylindrical cold gas region
-        smoothing_thickness = 0.05;     # Smoothing thickness for density transition
-        smoothing_thickness_vel = 0.05; # Smoothing thickness for velocity perturbations
+        radius = 3;                     # Radius of cylindrical cold gas region (kPc)
+        # smoothing_thickness = 0.05;     # Smoothing thickness for density transition
+        # smoothing_thickness_vel = 0.05; # Smoothing thickness for velocity perturbations
         
         # Velocity parameters
-        vel_shear = 1.0;                # Shear velocity magnitude
+        M_b = 1.0;                      # Stream Mach number relative to sound speed
         vel_pert = 0.1;                 # Perturbation velocity amplitude
         lambda_pert = 1.0;              # Perturbation wavelength (>0 for sinusoidal, =0 for localized)
         pert_loc = 0.0;                 # Location of localized perturbation (if lambda_pert = 0)
@@ -93,7 +92,7 @@ Time {
 # Output
 Output {
 #    list = ["image", "hdf5"];
-    list = ["image"];
+    list = ["image", "hdf5"];
 
     image {
         type = "image";
@@ -106,12 +105,13 @@ Output {
         include "input/Schedule/schedule_cycle_25.incl"
     }
 
-#    hdf5 {
-#        field_list = ["density", "velocity_x", "velocity_y", "velocity_z"];
-#        name = ["KH%02d.h5", "count"];
-#        type = "data";
-#        include "input/Schedule/schedule_cycle_25.incl"
-#    }
+    hdf5 {
+        field_list = ["density", "velocity_x", "velocity_y", "velocity_z", "total_energy"];
+        type = "data";
+        dir=["KH-%04d","count"];
+        name = [ "KH-%02d-%02d.h5", "proc", "count" ];
+        include "input/Schedule/schedule_cycle_25.incl"
+    }
 }
 
 # Stopping criteria

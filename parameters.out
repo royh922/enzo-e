@@ -32,9 +32,9 @@
  }
 
  Mesh {
-     root_blocks = [ 8, 4, 4 ];
+     root_blocks = [ 4, 2, 2 ];
      root_rank = 3;
-     root_size = [ 256, 128, 128 ];
+     root_size = [ 512, 256, 256 ];
  }
 
  Method {
@@ -53,6 +53,16 @@
  }
 
  Output {
+     hdf5 {
+         dir = [ "KH-%04d", "count" ];
+         field_list = [ "density", "velocity_x", "velocity_y", "velocity_z", "total_energy" ];
+         name = [ "KH-%02d-%02d.h5", "proc", "count" ];
+         schedule {
+             step = 25;
+             var = "cycle";
+         };
+         type = "data";
+     };
      image {
          axis = "y";
          colormap = [ "black", "white" ];
@@ -65,7 +75,7 @@
          };
          type = "image";
      };
-     list = [ "image" ];
+     list = [ "image", "hdf5" ];
  }
 
  Physics {

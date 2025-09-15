@@ -28,10 +28,10 @@ public: // interface
   EnzoInitialKelvinHelmholtz(int cycle, double time, ParameterGroup p) noexcept
     : Initial(cycle, time),
       gamma_adi_(p.value_float("gamma", 5.0/3.0)),
-      rho_0_(p.value_float("rho_0", 1.0)),
-      pgas_0_(p.value_float("pgas_0", 1.0)),
+      n_0_(p.value_float("n_0", 0.01)),
+      temperature_(p.value_float("temperature", 1.5)),
       density_contrast_(p.value_float("density_contrast", 10.0)),
-      vel_shear_(p.value_float("vel_shear", 1.0)),
+      M_b_(p.value_float("M_b", 1.0)),
       radius_(p.value_float("radius", 0.5)),
       smoothing_thickness_(p.value_float("smoothing_thickness", 0.1)),
       smoothing_thickness_vel_(p.value_float("smoothing_thickness_vel", -1.0)),
@@ -63,8 +63,8 @@ public: // interface
     }
 
     // Validate parameters
-    ASSERT("EnzoInitialKelvinHelmholtz", "rho_0 must be positive", rho_0_ > 0);
-    ASSERT("EnzoInitialKelvinHelmholtz", "pgas_0 must be positive", pgas_0_ > 0);
+    ASSERT("EnzoInitialKelvinHelmholtz", "n_0 must be positive", n_0_ > 0);
+    ASSERT("EnzoInitialKelvinHelmholtz", "temperature must be positive", temperature_ > 0);
     ASSERT("EnzoInitialKelvinHelmholtz", "density_contrast must be positive", 
            density_contrast_ > 0);
     ASSERT("EnzoInitialKelvinHelmholtz", "radius must be positive", radius_ > 0);
@@ -83,10 +83,10 @@ public: // interface
   EnzoInitialKelvinHelmholtz(CkMigrateMessage *m)
     : Initial(m),
       gamma_adi_(5.0/3.0),
-      rho_0_(1.0),
-      pgas_0_(1.0),
+      n_0_(0.01),
+      temperature_(1.5),
       density_contrast_(10.0),
-      vel_shear_(1.0),
+      M_b_(1.0),
       radius_(0.5),
       smoothing_thickness_(0.1),
       smoothing_thickness_vel_(0.1),
@@ -108,10 +108,10 @@ public: // interface
 
     Initial::pup(p);
     p | gamma_adi_;
-    p | rho_0_;
-    p | pgas_0_;
+    p | n_0_;
+    p | temperature_;
     p | density_contrast_;
-    p | vel_shear_;
+    p | M_b_;
     p | radius_;
     p | smoothing_thickness_;
     p | smoothing_thickness_vel_;
@@ -137,17 +137,17 @@ private: // attributes
   /// Adiabatic index (gamma)
   double gamma_adi_;
 
-  /// Background density (hot gas density)
-  double rho_0_;
+  /// Background number density (hot gas number density) [cm^-3]
+  double n_0_;
 
-  /// Background pressure (constant throughout domain)
-  double pgas_0_;
+  /// Stream temperature [10^4 K]
+  double temperature_;
 
-  /// Density contrast (cold gas density = rho_0 * density_contrast)
+  /// Density contrast (cold gas density = n_0 * density_contrast)
   double density_contrast_;
 
-  /// Shear velocity magnitude
-  double vel_shear_;
+  /// Stream Mach number relative to sound speed
+  double M_b_;
 
   /// Radius of the cylindrical cold gas region
   double radius_;
