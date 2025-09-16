@@ -18,9 +18,10 @@ Physics {
     list = ["fluid_props"];
     fluid_props {
 
-        dual_energy { type = "disabled"; }
+        dual_energy { type = "disabled"; } # Since Mach number << 100
         eos {gamma = 1.666666666667;} # Adiabatic index (5/3) 
 
+        # Ignored by ppm solver apparently
         floors {
             density  = 1e-10;
             pressure = 1e-10;
@@ -69,14 +70,27 @@ Initial {
 }
 
 # Boundary conditions
-Boundary { type = "periodic"; }
+Boundary { list = ["outflow", "periodic"];
+    outflow {
+        type = "outflow";
+        axis = "y";
+    }
+    outflow {
+        type = "outflow";
+        axis = "z";
+    }
+    periodic {
+        type = "periodic";
+        axis = "x";
+    }
+}
 
 # Time integration
 Method {
     list = ["ppm"];
     
     ppm {
-        courant = 0.8;
+        courant = 0.5;
         diffusion = true;
         flattening = 3;
         steepening = true;

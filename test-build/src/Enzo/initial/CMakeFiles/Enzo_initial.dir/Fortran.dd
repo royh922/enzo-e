@@ -1,5 +1,0 @@
-ninja_dyndep_version = 1.0
-build src/Enzo/initial/CMakeFiles/Enzo_initial.dir/turboinit.F.o: dyndep
-
-build src/Enzo/initial/CMakeFiles/Enzo_initial.dir/turboinit2d.F.o: dyndep
-
