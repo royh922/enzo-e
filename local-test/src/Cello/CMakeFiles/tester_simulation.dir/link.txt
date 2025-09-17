@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtester_simulation.a CMakeFiles/tester_simulation.dir/main_simulation.cpp.o
-/usr/bin/ranlib libtester_simulation.a

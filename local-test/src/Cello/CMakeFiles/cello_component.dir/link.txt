@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcello_component.a CMakeFiles/cello_component.dir/cello.cpp.o CMakeFiles/cello_component.dir/cello_Sync.cpp.o
-/usr/bin/ranlib libcello_component.a

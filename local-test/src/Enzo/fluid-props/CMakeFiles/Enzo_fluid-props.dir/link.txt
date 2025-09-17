@@ -1,2 +1,0 @@
-/usr/bin/ar qc libEnzo_fluid-props.a "CMakeFiles/Enzo_fluid-props.dir/EnzoComputePressure.cpp.o" "CMakeFiles/Enzo_fluid-props.dir/EnzoComputeTemperature.cpp.o" "CMakeFiles/Enzo_fluid-props.dir/EnzoEOSVariant.cpp.o" "CMakeFiles/Enzo_fluid-props.dir/EnzoPhysicsFluidProps.cpp.o"
-/usr/bin/ranlib libEnzo_fluid-props.a

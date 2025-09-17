@@ -30,6 +30,10 @@ build-*/Cello/*
 build-*/Enzo/*
 build-*/External/*
 build-*/SConscript
+local-test/
+
+# ignore test outputs
+KH-*/
 
 # ignore the binaries
 bin/enzo-e

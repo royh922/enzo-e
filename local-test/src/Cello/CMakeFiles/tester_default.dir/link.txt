@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtester_default.a CMakeFiles/tester_default.dir/main.cpp.o
-/usr/bin/ranlib libtester_default.a

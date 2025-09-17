@@ -1,2 +1,0 @@
-/usr/bin/ar qc libEnzo_riemann.a CMakeFiles/Enzo_riemann.dir/EnzoRiemann.cpp.o
-/usr/bin/ranlib libEnzo_riemann.a

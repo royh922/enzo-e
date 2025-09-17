@@ -1,10 +1,18 @@
  Boundary : {
-     type = "periodic";
+     list = ( "outflow", "periodic" );
+     outflow : {
+         axis = "z";
+         type = "outflow";
+     };
+     periodic : {
+         axis = "x";
+         type = "periodic";
+     };
  }
 
  Domain : {
-     lower = ( -4.000000000000000, -2.000000000000000, -2.000000000000000 );
-     upper = ( 4.000000000000000, 2.000000000000000, 2.000000000000000 );
+     lower = ( -16.00000000000000, -16.00000000000000, -16.00000000000000 );
+     upper = ( 16.00000000000000, 16.00000000000000, 16.00000000000000 );
  }
 
  Field : {
@@ -14,27 +22,24 @@
 
  Initial : {
      kelvin_helmholtz : {
+         M_b = 1.000000000000000;
          density_contrast = 100.0000000000000;
-         gamma = 1.666670000000000;
          lambda_pert = 1.000000000000000;
+         n_0 = 0.01000000000000000;
          noisy_ic = false;
          pert_loc = 0.000000000000000;
-         pgas_0 = 1.000000000000000;
-         radius = 0.5000000000000000;
+         radius = 3.000000000000000;
          random_seed = 12345;
-         rho_0 = 1.000000000000000;
-         smoothing_thickness = 0.05000000000000000;
-         smoothing_thickness_vel = 0.05000000000000000;
-         vel_pert = 0.1000000000000000;
-         vel_shear = 1.000000000000000;
+         temperature = 15000.00000000000;
+         vel_pert = 0.01000000000000000;
      };
      list = ( "kelvin_helmholtz" );
  }
 
  Mesh : {
-     root_blocks = ( 4, 2, 2 );
+     root_blocks = ( 8, 8, 8 );
      root_rank = 3;
-     root_size = ( 512, 256, 256 );
+     root_size = ( 256, 256, 256 );
  }
 
  Method : {
@@ -97,9 +102,15 @@
 
  Stopping : {
      cycle = 1000;
-     time = 2.000000000000000;
+     time = 10.00000000000000;
  }
 
  Time : {
      time_final = 2.000000000000000;
+ }
+
+ Units : {
+     length = 3.085677580962325e+21;
+     mass = 2.950087901621280e+36;
+     time = 214898975307947.4;
  }

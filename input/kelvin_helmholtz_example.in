@@ -5,12 +5,12 @@
 # Domain and mesh settings
 Domain {
     lower = [-16.0, -16.0, -16.0];  # Domain bounds
-    upper = [ 16.0,  16.0,  16.0];
+    upper = [ 16.0,  16.0,  16.0];  # In units of kPc
 }
 
 Mesh {
     root_rank = 3;            # 3D simulation
-    root_size = [512, 512, 512];    # Grid resolution
+    root_size = [256, 256, 256];    # Grid resolution
     root_blocks = [8, 8, 8];     # Block structure
 }
 
@@ -31,6 +31,12 @@ Physics {
     }
 }
 
+Units{
+    length = 3.0856775809623245E21; # 1 kPc in cm
+    mass = 2.95008790162128E36; # Scaled such that density = 0.01 cm^-3 is 100 code unit
+    time = 2.148989753079474E14; # Time unit such that IC pressure is 1.0
+}
+
 # Field configuration
 Field {
     list = ["density", "pressure", "velocity_x", "velocity_y", "velocity_z", 
@@ -46,17 +52,16 @@ Initial {
         # Basic fluid parameters
         n_0 = 0.01;                     # Stream Hydrogen number density (cm^-3)
         density_contrast = 100.0;       # Cold gas density = rho_0 * density_contrast
-        temperature = 1.5;              # Stream temperature (10^4 K)
-        gamma = 1.66667;                # Adiabatic index
+        temperature = 1.5e4;            # Stream temperature (K)
         
         # Geometry parameters
-        radius = 3;                     # Radius of cylindrical cold gas region (kPc)
+        radius = 3.0;                     # Radius of cylindrical cold gas region (kPc)
         # smoothing_thickness = 0.05;     # Smoothing thickness for density transition
         # smoothing_thickness_vel = 0.05; # Smoothing thickness for velocity perturbations
         
         # Velocity parameters
-        M_b = 1.0;                      # Stream Mach number relative to sound speed
-        vel_pert = 0.1;                 # Perturbation velocity amplitude
+        M_b = 1.0;                      # Stream Mach number relative to background sound speed
+        vel_pert = 0.01;                # Perturbation velocity amplitude (fraction of stream sound speed)
         lambda_pert = 1.0;              # Perturbation wavelength (>0 for sinusoidal, =0 for localized)
         pert_loc = 0.0;                 # Location of localized perturbation (if lambda_pert = 0)
         
@@ -90,7 +95,7 @@ Method {
     list = ["ppm"];
     
     ppm {
-        courant = 0.5;
+        courant = 0.8;
         diffusion = true;
         flattening = 3;
         steepening = true;
@@ -130,8 +135,8 @@ Output {
 
 # Stopping criteria
 Stopping {
-    cycle = 1000;                    # Maximum cycles
-    time = 2.0;                      # Maximum time
+    cycle = 5000;                    # Maximum cycles
+    time = 100.0;                      # Maximum time
 }
 
 # Monitor performance

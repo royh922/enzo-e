@@ -77,37 +77,40 @@ void EnzoInitialKelvinHelmholtz::enforce_block
 
   // Constants and unit conversions
   const double pi = cello::pi;
-  const double m_H = 1.673e-24;  // Hydrogen mass in grams (code mass unit)
+  const double m_H = enzo_constants::mass_hydrogen;  // Hydrogen mass in grams 
+  const double k_B = enzo_constants::kboltz;     // Boltzmann constant [erg/K]
+
+  // Read code unit conversions
+  const EnzoUnits * enzo_units = enzo::units();
   
   // Get molecular weight from Enzo config
-  EnzoConfig * enzo_config = enzo::config();
+  const EnzoConfig * enzo_config = enzo::config();
+
   const double mol_weight = enzo_config->physics_fluid_props_mol_weight;
   
-  // Physical constants in code units (CGS with mass unit = m_H)
-  const double k_B = 1.38e-16;     // Boltzmann constant [erg/K]
-  const double T_unit = 1.0e4;     // Temperature unit [K]
   
   // Calculate densities in code units (mass density = number density * molecular weight)
   // Stream = cold, dense gas in the center (inside cylinder)
   // Surrounding = hot, diffuse gas outside cylinder
-  const double rho_cold = n_0_ * mol_weight;  // Cold (stream) gas mass density
+  // Convert to code units
+  const double rho_cold = n_0_ * mol_weight * m_H * std::pow(enzo_units->length(), 3) / enzo_units->mass();
   const double rho_hot = rho_cold / density_contrast_;  // Hot (surrounding) gas mass density
   
   // For uniform pressure: P = constant
   // From ideal gas law: P = ρ * c_s^2 / γ = ρ * k_B * T / (μ * m_H * γ)
   // With uniform pressure, higher density regions have lower temperature
   // This maintains pressure equilibrium across the interface
-  const double T_cold = temperature_ * T_unit;  // Cold stream temperature in K
-  const double p_uniform = n_0_ * k_B * T_cold / m_H;  // Uniform pressure in code units
+  const double T_cold = temperature_;  // Cold stream temperature in K
+  // Uniform pressure in code units
+  const double p_uniform = rho_cold * k_B * T_cold / (mol_weight * m_H) / std::pow(enzo_units->length() / enzo_units->time(), 2);  
   
   // Calculate temperatures for uniform pressure
-  // P = ρ * k_B * T / (μ * m_H) => T = P * μ * m_H / (ρ * k_B)
-  const double T_hot = p_uniform * mol_weight * m_H / (rho_hot * k_B);  // Hot gas temperature
+  const double T_hot = T_cold * density_contrast_;  // Hot gas temperature
   // T_cold is already defined above
   
   // Calculate sound speed and shear velocity using cold stream properties
-  const double c_s = std::sqrt(gamma_adi_ * p_uniform / rho_cold);  // Sound speed
-  const double vel_shear = M_b_ * c_s;  // Shear velocity based on Mach number
+  const double c_b = std::sqrt(gamma_adi_ * p_uniform / rho_hot);  // Background sound speed
+  const double vel_shear = M_b_ * c_b;  // Shear velocity based on Mach number
 
   // Initialize uniform magnetic field if requested
   if (has_bfield && initialize_uniform_bfield_) {
@@ -168,9 +171,10 @@ void EnzoInitialKelvinHelmholtz::enforce_block
         double vel_y = 0.0;
         double vel_z = 0.0;
 
+        // Should be multimode but for now just single mode
         // Add perturbations at the interface
         if (std::abs(r - radius_) < 0.5) {  // Near the interface
-          double mag = vel_pert_;
+          double mag = vel_pert_ * c_b;
           
           if (lambda_pert_ > 0.0) {
             // Sinusoidal perturbation along x-axis
@@ -204,14 +208,15 @@ void EnzoInitialKelvinHelmholtz::enforce_block
           pressure(iz, iy, ix) = p_uniform;
         }
 
+        // Note that enzo-e uses specific energy (per mass) in dealing with energy
         // Set internal energy (uniform pressure, but varies with density)
         if (has_internal_energy) {
-          internal_energy(iz, iy, ix) = p_uniform / (gamma_adi_ - 1.0);
+          internal_energy(iz, iy, ix) = p_uniform / (gamma_adi_ - 1.0) / density_val;
         }
 
         // Calculate total energy
-        double kinetic_energy = 0.5 * (vel_x * vel_x + vel_y * vel_y + vel_z * vel_z) * density_val;
-        double thermal_energy = p_uniform / (gamma_adi_ - 1.0);
+        double kinetic_energy = 0.5 * (vel_x * vel_x + vel_y * vel_y + vel_z * vel_z);
+        double thermal_energy = p_uniform / (gamma_adi_ - 1.0) / density_val;
         
         double total_energy_val = thermal_energy + kinetic_energy;
         

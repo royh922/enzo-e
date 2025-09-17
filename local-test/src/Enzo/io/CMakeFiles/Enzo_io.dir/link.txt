@@ -1,2 +1,0 @@
-/usr/bin/ar qc libEnzo_io.a CMakeFiles/Enzo_io.dir/control_restart.cpp.o CMakeFiles/Enzo_io.dir/EnzoInitialHdf5.cpp.o CMakeFiles/Enzo_io.dir/EnzoInitialMusic.cpp.o CMakeFiles/Enzo_io.dir/EnzoMethodCheck.cpp.o CMakeFiles/Enzo_io.dir/IoEnzoBlock.cpp.o
-/usr/bin/ranlib libEnzo_io.a

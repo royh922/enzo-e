@@ -1,2 +1,0 @@
-/usr/bin/ar qc libtester_mesh.a CMakeFiles/tester_mesh.dir/main_mesh.cpp.o
-/usr/bin/ranlib libtester_mesh.a

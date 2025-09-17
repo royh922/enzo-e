@@ -1,2 +1,0 @@
-/usr/bin/ar qc libEnzo_hydro-mhd.a "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMethodMHDVlct.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMethodPpm.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMethodPpm_SolveHydroEquations.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMethodPpml.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMethodPpml_SolveMHDEquations.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/EnzoMHDIntegratorStageCommands.cpp.o" "CMakeFiles/Enzo_hydro-mhd.dir/SetMinimumSupport.cpp.o"
-/usr/bin/ranlib libEnzo_hydro-mhd.a

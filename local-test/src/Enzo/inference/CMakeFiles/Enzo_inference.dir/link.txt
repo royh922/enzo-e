@@ -1,2 +1,0 @@
-/usr/bin/ar qc libEnzo_inference.a CMakeFiles/Enzo_inference.dir/EnzoLevelArray.cpp.o CMakeFiles/Enzo_inference.dir/EnzoMethodInference.cpp.o CMakeFiles/Enzo_inference.dir/Index3.cpp.o
-/usr/bin/ranlib libEnzo_inference.a

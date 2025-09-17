@@ -1,2 +1,0 @@
-/usr/bin/ar qc libperformance.a CMakeFiles/performance.dir/performance_Papi.cpp.o CMakeFiles/performance.dir/performance_Performance.cpp.o
-/usr/bin/ranlib libperformance.a
