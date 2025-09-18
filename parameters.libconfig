@@ -63,8 +63,9 @@
          field_list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy" );
          name = ( "KH-%02d-%02d.h5", "proc", "count" );
          schedule : {
-             step = 25;
-             var = "cycle";
+             start = 0.000000000000000;
+             step = 3.000000000000000;
+             var = "time";
          };
          type = "data";
      };
@@ -75,8 +76,9 @@
          field_list = ( "density" );
          name = ( "KH%02d.png", "count" );
          schedule : {
-             step = 25;
-             var = "cycle";
+             start = 0.000000000000000;
+             step = 3.000000000000000;
+             var = "time";
          };
          type = "image";
      };
@@ -101,8 +103,7 @@
  }
 
  Stopping : {
-     cycle = 1000;
-     time = 10.00000000000000;
+     time = 464.0000000000000;
  }
 
  Time : {

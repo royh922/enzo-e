@@ -121,7 +121,11 @@ Output {
         axis = "y";                    # Slice position in x
         
         include "input/Colormap/colormap_greyscale.incl"
-        include "input/Schedule/schedule_cycle_25.incl"
+        schedule {
+            var = "time";
+            start = 0.0;
+            step =  3.0;
+        }
     }
 
     hdf5 {
@@ -129,14 +133,17 @@ Output {
         type = "data";
         dir=["KH-%04d","count"];
         name = [ "KH-%02d-%02d.h5", "proc", "count" ];
-        include "input/Schedule/schedule_cycle_25.incl"
+        schedule {
+            var = "time";
+            start = 0.0;
+            step =  3.0;
+        }
     }
 }
 
 # Stopping criteria
 Stopping {
-    cycle = 5000;                    # Maximum cycles
-    time = 100.0;                      # Maximum time
+    time = 464.0;                      # Maximum time, 10 sound crossing times
 }
 
 # Monitor performance
