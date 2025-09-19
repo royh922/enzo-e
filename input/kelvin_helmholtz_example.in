@@ -102,12 +102,6 @@ Method {
     }
 }
 
-# Time stepping
-Time {
-    time_final = 2.0;               # Final time
-    # time_step_min = 1.0e-8;         # Minimum time step
-}
-
 # Output
 Output {
 #    list = ["image", "hdf5"];
