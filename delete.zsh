@@ -1,11 +1,11 @@
 #!/bin/zsh
 
-# Loop through all directories that match the pattern KH-00[09][09]
-for dir in KH-00[0-9][0-9](/); do
+# Loop through all directories that match the pattern KHMHD-00[09][09]
+for dir in KHMHD-00[0-9][0-9](/); do
   # Check if the directory exists to avoid errors
   if [ -d "$dir" ]; then
     # Extract the last two digits from the directory name
-    num_part=${dir:5:2}
+    num_part=${dir:8:2}
 
     # Check if the number is NOT divisible by 5
     if (( num_part % 5 != 0 )); then

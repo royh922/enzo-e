@@ -125,7 +125,7 @@ void EnzoInitialKelvinHelmholtz::enforce_block
     }
   }
 
-  // Calculate magnetic energy density if magnetic fields are present
+  // Calculate specific magnetic energy density if magnetic fields are present
   double magnetic_edens = 0.0;
   if (has_bfield) {
     magnetic_edens = 0.5 * (uniform_bfield_[0] * uniform_bfield_[0] + 
@@ -220,9 +220,9 @@ void EnzoInitialKelvinHelmholtz::enforce_block
         
         double total_energy_val = thermal_energy + kinetic_energy;
         
-        // Add magnetic energy if present
+        // Add specific magnetic energy if present
         if (has_bfield) {
-          total_energy_val += magnetic_edens;
+          total_energy_val += magnetic_edens / density_val;
         }
 
         total_energy(iz, iy, ix) = total_energy_val;

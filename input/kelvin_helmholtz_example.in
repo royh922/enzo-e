@@ -39,14 +39,25 @@ Units{
 
 # Field configuration
 Field {
-    list = ["density", "pressure", "velocity_x", "velocity_y", "velocity_z", 
-            "total_energy", "internal_energy"];
+    list = ["density", "velocity_x", "velocity_y", "velocity_z", 
+            "total_energy", "bfieldi_x", "bfieldi_y", "bfieldi_z", 
+            "bfield_x", "bfield_y", "bfield_z", "pressure"];
     ghost_depth = 4;               # Ghost zones for boundary conditions
+
+    bfieldi_x{
+        centering = [false, true, true];
+    }
+    bfieldi_y{
+        centering = [true, false, true];
+    }
+    bfieldi_z{
+        centering = [true, true, false];
+    }
 }
 
 # Kelvin-Helmholtz initial conditions
 Initial {
-    list = ["kelvin_helmholtz"];
+    list = ["kelvin_helmholtz", "vlct_bfield"];
     
     kelvin_helmholtz {
         # Basic fluid parameters
@@ -70,8 +81,26 @@ Initial {
         random_seed = 12345;            # Random seed for noise generation
         
         # Magnetic field (optional - uncomment for MHD)
-        # uniform_bfield = [0.1, 0.0, 0.0];  # Uniform magnetic field
+        # uniform_bfield = [1.56862745, 0.0, 0.0];  # Uniform magnetic field
     }
+
+    vlct_bfield {
+        # Set initial uniform magnetic field in x-direction
+        # Value set to 0.8 microGauss to match Berlok and Pfrommer (2019)
+        update_etot = true;
+        Ax = [0.0];
+        Ay = [-0.5*1.56862745*z];
+        Az = [0.5*1.56862745*y];
+    }
+
+    values {
+        # 1 bfield code unit approx 5.1e-7 Gauss
+        # Set to 0.8 microGauss to match Berlok and Pfrommer (2019)
+        bfield_x = 1.56862745;
+        bfield_y = 0.0;
+        bfield_z = 0.0;
+    }
+    
 }
 
 # Boundary conditions
@@ -92,13 +121,23 @@ Boundary { list = ["outflow", "periodic"];
 
 # Time integration
 Method {
-    list = ["ppm"];
+    # list = ["ppm"];
+    list = ["mhd_vlct"];
     
     ppm {
         courant = 0.8;
         diffusion = true;
         flattening = 3;
         steepening = true;
+    }
+
+    mhd_vlct {
+        mhd_choice = "constrained_transport";
+        courant = 0.5;
+        time_scheme = "vl";
+        riemann_solver = "hlld";
+        reconstruct_method = "plm";
+        theta_limiter = 2.0;
     }
 }
 
@@ -110,8 +149,8 @@ Output {
     image {
         type = "image";
         field_list = ["density"];
-        dir = "images";
-        name = ["KH%02d.png", "count"];
+        dir = "imagesMHD";
+        name = ["KHMHD%02d.png", "count"];
         axis = "y";                    # Slice position in x
         
         include "input/Colormap/colormap_greyscale.incl"
@@ -123,10 +162,11 @@ Output {
     }
 
     hdf5 {
-        field_list = ["density", "velocity_x", "velocity_y", "velocity_z", "total_energy"];
+        field_list = ["density", "velocity_x", "velocity_y", "velocity_z", "total_energy",
+                      "bfield_x", "bfield_y", "bfield_z"];
         type = "data";
-        dir=["KH-%04d","count"];
-        name = [ "KH-%02d-%02d.h5", "proc", "count" ];
+        dir=["KHMHD-%04d","count"];
+        name = [ "KHMHD-%02d-%02d.h5", "proc", "count" ];
         schedule {
             var = "time";
             start = 0.0;
