@@ -24,6 +24,7 @@ config.log
 errors.org
 warnings.org
 doc/dox-xml
+.vscode/
 
 # ignore directories used for building branches
 build-*/Cello/*

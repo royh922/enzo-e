@@ -198,7 +198,7 @@ Output {
                       "bfield_x", "bfield_y", "bfield_z"];
         type = "data";
         dir=["KHMHD-%04d","count"];
-        name = [ "KHMHD-%02d-%02d.h5", "proc", "count" ];
+        name = [ "KHMHD-%02d-%02d.h5", "count", "proc"];
         schedule {
             var = "time";
             start = 0.0;
