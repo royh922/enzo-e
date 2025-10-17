@@ -1,6 +1,6 @@
  Adapt {
      max_level = 0;
-     min_level = -3;
+     min_level = 0;
  }
 
  Boundary {
@@ -21,40 +21,22 @@
  }
 
  Field {
-     bfieldi_x {
-         centering = [ false, true, true ];
-     };
-     bfieldi_y {
-         centering = [ true, false, true ];
-     };
-     bfieldi_z {
-         centering = [ true, true, false ];
-     };
      ghost_depth = 4;
-     list = [ "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfieldi_x", "bfieldi_y", "bfieldi_z", "bfield_x", "bfield_y", "bfield_z", "pressure" ];
+     list = [ "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "pressure" ];
  }
 
  Initial {
      kelvin_helmholtz {
          M_b = 1.000000000000000;
          density_contrast = 100.0000000000000;
-         lambda_pert = 1.000000000000000;
          n_0 = 0.01000000000000000;
          noisy_ic = false;
-         pert_loc = 0.000000000000000;
          radius = 3.000000000000000;
          random_seed = 12345;
          temperature = 15000.00000000000;
          vel_pert = 0.01000000000000000;
      };
-     list = [ "kelvin_helmholtz", "vlct_bfield" ];
-     restart = true;
-     restart_dir = "mhdcheck-10";
-     values {
-         bfield_x = 1.568627450000000;
-         bfield_y = 0.000000000000000;
-         bfield_z = 0.000000000000000;
-     };
+     list = [ "kelvin_helmholtz" ];
      vlct_bfield {
          Ax = [ 0.000000000000000 ];
          Ay = [  -0.7843137250000000  *  z  ];
@@ -64,36 +46,36 @@
  }
 
  Mesh {
-     root_blocks = [ 8, 8, 8 ];
+     root_blocks = [ 2, 2, 2 ];
      root_rank = 3;
-     root_size = [ 32, 32, 32 ];
+     root_size = [ 128, 128, 128 ];
  }
 
  Method {
      check {
-         dir = [ "mhdcheck-%02d", "cycle" ];
+         dir = [ "check-%02d", "cycle" ];
          include_ghosts = false;
          num_files = 8;
          ordering = "order_morton";
          schedule {
-             start = 20;
-             step = 10;
+             start = 100;
+             step = 500;
              var = "cycle";
          };
      };
-     list = [ "order_morton", "mhd_vlct", "check" ];
+     list = [ "mhd_vlct" ];
      mhd_vlct {
-         courant = 0.5000000000000000;
-         mhd_choice = "constrained_transport";
+         courant = 0.4000000000000000;
+         mhd_choice = "no_bfield";
          reconstruct_method = "plm";
-         riemann_solver = "hlld";
+         riemann_solver = "hllc";
          theta_limiter = 2.000000000000000;
          time_scheme = "vl";
      };
      order_morton {
          schedule {
-             start = 20;
-             step = 10;
+             start = 100;
+             step = 500;
              var = "cycle";
          };
      };
@@ -112,9 +94,9 @@
 
  Output {
      hdf5 {
-         dir = [ "KHMHD-%04d", "count" ];
-         field_list = [ "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfield_x", "bfield_y", "bfield_z" ];
-         name = [ "KHMHD-%02d-%02d.h5", "proc", "count" ];
+         dir = [ "KH-HD-%04d", "count" ];
+         field_list = [ "density", "velocity_x", "velocity_y", "velocity_z", "total_energy" ];
+         name = [ "KH-HD-%02d-%02d.h5", "proc", "count" ];
          schedule {
              start = 0.000000000000000;
              step = 3.000000000000000;
@@ -125,9 +107,9 @@
      image {
          axis = "y";
          colormap = [ "black", "white" ];
-         dir = "imagesMHD";
+         dir = "HD";
          field_list = [ "density" ];
-         name = [ "KHMHD%02d.png", "count" ];
+         name = [ "KH-HD%02d.png", "count" ];
          schedule {
              start = 0.000000000000000;
              step = 3.000000000000000;

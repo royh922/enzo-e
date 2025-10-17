@@ -36,6 +36,7 @@ local-test/
 # ignore test outputs
 KH-*/
 KHMHD-*/
+HD/
 
 # ignore the binaries
 bin/enzo-e
