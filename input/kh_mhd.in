@@ -1,0 +1,225 @@
+# Kelvin-Helmholtz Instability Test Problem
+# Based on the Athena++ KH instability test case
+# Simulates cylindrical shear flow in hot diffuse medium
+# Has magnetic fields
+
+# Domain and mesh settings
+Domain {
+    lower = [-16.0, -16.0, -16.0];  # Domain bounds
+    upper = [ 16.0,  16.0,  16.0];  # In units of kPc
+}
+
+# Low res run for local only
+Mesh {
+    root_rank = 3;            # 3D simulation
+    root_size = [128, 128, 128];    # Grid resolution
+    root_blocks = [2, 2, 2];     # Block structure
+}
+
+# Enforce min_level = -log2(root_blocks) to ensure checkpoint compatibility
+Adapt {
+    max_level = 0; # No refinement
+    min_level = 0;
+}
+
+Physics {
+    list = ["fluid_props"];
+    fluid_props {
+
+        dual_energy { type = "disabled"; } # Since Mach number << 100
+        eos {
+            gamma = 1.666666666667; # Adiabatic index (5/3)
+            type = "ideal";
+        }  
+
+        # Ignored by ppm solver apparently
+        floors {
+            density  = 1e-10;
+            pressure = 1e-10;
+        }
+
+        mol_weight = 0.6; # Fully ionized Hydrogen 
+    }
+}
+
+Units{
+    length = 3.0856775809623245E21; # 1 kPc in cm
+    mass = 2.95008790162128E36; # Scaled such that density = 0.01 cm^-3 is 100 code unit
+    time = 2.148989753079474E14; # Time unit such that IC pressure is 1.0
+}
+
+# Field configuration
+Field {
+#   MHD
+    list = ["density", "velocity_x", "velocity_y", "velocity_z", 
+            "total_energy", "bfieldi_x", "bfieldi_y", "bfieldi_z", 
+            "bfield_x", "bfield_y", "bfield_z", "pressure"];
+
+    bfieldi_x{
+        centering = [false, true, true];
+    }
+    bfieldi_y{
+        centering = [true, false, true];
+    }
+    bfieldi_z{
+        centering = [true, true, false];
+    }
+
+#   HD
+#     list = ["density", "velocity_x", "velocity_y", "velocity_z", 
+#             "total_energy", "pressure"];
+    ghost_depth = 4;               # Ghost zones for boundary conditions
+}
+
+# Kelvin-Helmholtz initial conditions
+Initial {
+#   MHD
+    list = ["kelvin_helmholtz", "vlct_bfield"];
+#   HD
+#     list = ["kelvin_helmholtz"];
+    
+#     restart = true;
+#     restart_dir = "mhdcheck-10"; 
+
+    kelvin_helmholtz {
+        # Basic fluid parameters
+        n_0 = 0.01;                     # Stream Hydrogen number density (cm^-3)
+        density_contrast = 100.0;       # Cold gas density = rho_0 * density_contrast
+        temperature = 1.5e4;            # Stream temperature (K)
+        
+        # Geometry parameters
+        radius = 3.0;                     # Radius of cylindrical cold gas region (kPc)
+        # smoothing_thickness = 0.05;     # Smoothing thickness for density transition
+        # smoothing_thickness_vel = 0.05; # Smoothing thickness for velocity perturbations
+        
+        # Velocity parameters
+        M_b = 1.0;                      # Stream Mach number relative to background sound speed
+        # Perturbation parameters according to Mandelker et al. 2020
+        vel_pert = 0.01;                # Perturbation velocity amplitude (fraction of stream sound speed)
+        
+        # Optional parameters
+        noisy_ic = false;               # Add random noise to perturbations
+        random_seed = 12345;            # Random seed for noise generation
+    }
+
+    vlct_bfield {
+        # Set initial uniform magnetic field in x-direction
+        # Value set to 0.25 microGauss (beta = 10) to match Berlok and Pfrommer (2019)
+        update_etot = true;
+        Ax = [0.0];
+        Ay = [-0.5*1.56862745*0.3125*z];
+        Az = [0.5*1.56862745*0.3125*y];
+    }
+    
+}
+
+# Boundary conditions
+Boundary { list = ["outflow", "periodic"];
+    outflow {
+        type = "outflow";
+        axis = "y";
+    }
+    outflow {
+        type = "outflow";
+        axis = "z";
+    }
+    periodic {
+        type = "periodic";
+        axis = "x";
+    }
+}
+
+# Time integration
+Method {
+    # list = ["ppm"];
+    list = ["mhd_vlct"];
+    
+    ppm {
+        courant = 0.8;
+        diffusion = true;
+        flattening = 3;
+        steepening = true;
+    }
+
+    # Cycle is the only variable that works with order_morton and check
+    # If restarting from checkpoint, ensure start cycle> checkpoint cycle
+    order_morton {
+         schedule {
+            var = "cycle"; 
+            start = 100;
+            step =  500;
+        }
+     };
+    check {
+        dir = [ "check-%02d", "cycle" ];
+        num_files = 8;
+        include_ghosts = false;
+        ordering = "order_morton";
+        schedule {
+            var = "cycle";
+            start = 100;
+            step =  500;
+        }
+    };
+
+    mhd_vlct {
+#         MHD
+        mhd_choice = "constrained_transport";
+        riemann_solver = "hlld";
+#         HD
+#         mhd_choice = "no_bfield";
+#         riemann_solver = "hllc";
+        courant = 0.4;
+        time_scheme = "vl";
+        reconstruct_method = "plm";
+        theta_limiter = 2.0;
+    }
+}
+
+# Output
+Output {
+    list = ["image", "hdf5"];
+
+    image {
+        type = "image";
+        field_list = ["density"];
+        dir = "MHD";
+        name = ["KH-MHD%02d.png", "count"];
+        axis = "y";                    # Slice position in x
+        
+        include "input/Colormap/colormap_greyscale.incl"
+        schedule {
+            var = "time";
+            start = 0.0;
+            step =  3.0;
+        }
+    }
+
+    hdf5 {
+#         MHD
+        field_list = ["density", "velocity_x", "velocity_y", "velocity_z", "total_energy",
+                      "bfield_x", "bfield_y", "bfield_z"];
+#         HD
+#         field_list = ["density", "velocity_x", "velocity_y", "velocity_z", "total_energy"];
+        type = "data";
+        dir=["KH-MHD-%04d", "count"];
+        name = [ "KH-MHD-%02d-%02d.h5", "proc", "count" ];
+        schedule {
+            var = "time";
+            start = 0.0;
+            step =  3.0;
+        }
+    }
+
+}
+
+# Stopping criteria
+Stopping {
+    time = 464.0;                      # Maximum time, 10 sound crossing times
+}
+
+# Monitor performance
+Monitor {
+    verbose = true;
+    debug = false;
+}

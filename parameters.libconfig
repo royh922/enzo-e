@@ -21,8 +21,17 @@
  }
 
  Field : {
+     bfieldi_x : {
+         centering = ( false, true, true );
+     };
+     bfieldi_y : {
+         centering = ( true, false, true );
+     };
+     bfieldi_z : {
+         centering = ( true, true, false );
+     };
      ghost_depth = 4;
-     list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "pressure" );
+     list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfieldi_x", "bfieldi_y", "bfieldi_z", "bfield_x", "bfield_y", "bfield_z", "pressure" );
  }
 
  Initial : {
@@ -36,11 +45,11 @@
          temperature = 15000.00000000000;
          vel_pert = 0.01000000000000000;
      };
-     list = ( "kelvin_helmholtz" );
+     list = ( "kelvin_helmholtz", "vlct_bfield" );
      vlct_bfield : {
          Ax = ( 0.000000000000000 );
-         Ay = ( " -0.7843137250000000  *  z " );
-         Az = ( " 0.7843137250000000  *  y " );
+         Ay = ( " -0.2450980390625000  *  z " );
+         Az = ( " 0.2450980390625000  *  y " );
          update_etot = true;
      };
  }
@@ -66,9 +75,9 @@
      list = ( "mhd_vlct" );
      mhd_vlct : {
          courant = 0.4000000000000000;
-         mhd_choice = "no_bfield";
+         mhd_choice = "constrained_transport";
          reconstruct_method = "plm";
-         riemann_solver = "hllc";
+         riemann_solver = "hlld";
          theta_limiter = 2.000000000000000;
          time_scheme = "vl";
      };
@@ -94,9 +103,9 @@
 
  Output : {
      hdf5 : {
-         dir = ( "KH-HD-%04d", "count" );
-         field_list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy" );
-         name = ( "KH-HD-%02d-%02d.h5", "proc", "count" );
+         dir = ( "KH-MHD-%04d", "count" );
+         field_list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfield_x", "bfield_y", "bfield_z" );
+         name = ( "KH-MHD-%02d-%02d.h5", "proc", "count" );
          schedule : {
              start = 0.000000000000000;
              step = 3.000000000000000;
@@ -107,9 +116,9 @@
      image : {
          axis = "y";
          colormap = ( "black", "white" );
-         dir = "HD";
+         dir = "MHD";
          field_list = ( "density" );
-         name = ( "KH-HD%02d.png", "count" );
+         name = ( "KH-MHD%02d.png", "count" );
          schedule : {
              start = 0.000000000000000;
              step = 3.000000000000000;

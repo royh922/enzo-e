@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-# Loop through all directories that match the pattern KHMHD-00[09][09]
-for dir in KHMHD-00[0-9][0-9](/); do
+# Loop through all directories that match the pattern KH-HD-00[09][09]
+for dir in KH-HD-00[0-9][0-9](/); do
   # Check if the directory exists to avoid errors
   if [ -d "$dir" ]; then
     # Extract the last two digits from the directory name
