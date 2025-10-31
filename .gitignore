@@ -32,6 +32,7 @@ build-*/Enzo/*
 build-*/External/*
 build-*/SConscript
 local-test/
+build_*/
 
 # ignore test outputs
 KH-*/

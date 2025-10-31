@@ -166,9 +166,10 @@ void EnzoInitialKelvinHelmholtz::enforce_block(Block* block, const Hierarchy* hi
                   double mag = vel_pert_ * c_s;
                   double mode_sum = 0.0;
                     for (int k = 2; k <= 64; k++) {
-                        for (int m = 0; m <= 0; m++) {
-                            double random_phase = ((double)std::rand() / RAND_MAX) * 2.0 * pi;
-                            mode_sum += std::cos(2.0 * pi * k * z + m * phi + random_phase);
+                        for (int m = 0; m <= 1; m++) {
+                           // double random_phase = ((double)std::rand() / RAND_MAX) * 2.0 * pi;
+                            // divide by 32.0 because box length is 32.0
+			    mode_sum += std::cos(2.0 * pi * k * x / 32.0 + m * phi);
                         }
                     }
                     mode_sum *= std::exp(-std::pow((r - radius_) / (radius_ / 16.0), 2)); // Gaussian 
