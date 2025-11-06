@@ -1,1 +1,1 @@
-~/charm/netlrts-darwin-arm8/charmrun ++local +p8 local-test/bin/enzo-e ./input/kh_mhd.in
+~/charm/netlrts-darwin-arm8/charmrun ++local +p8 local-test/bin/enzo-e ./input/HelloWorld/Hi.in

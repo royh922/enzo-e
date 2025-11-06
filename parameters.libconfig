@@ -1,93 +1,56 @@
  Adapt : {
-     max_level = 0;
-     min_level = 0;
+     list = ( "slope" );
+     max_level = 3;
+     slope : {
+         field_list = ( "density" );
+         max_coarsen = 2.000000000000000;
+         min_refine = 10.00000000000000;
+         type = "slope";
+     };
  }
 
  Boundary : {
-     list = ( "outflow", "periodic" );
-     outflow : {
-         axis = "z";
-         type = "outflow";
-     };
-     periodic : {
-         axis = "x";
-         type = "periodic";
-     };
+     type = "reflecting";
  }
 
  Domain : {
-     lower = ( -16.00000000000000, -16.00000000000000, -16.00000000000000 );
-     upper = ( 16.00000000000000, 16.00000000000000, 16.00000000000000 );
+     lower = ( 0.000000000000000, 0.000000000000000 );
+     upper = ( 1.000000000000000, 1.000000000000000 );
  }
 
  Field : {
-     bfieldi_x : {
-         centering = ( false, true, true );
-     };
-     bfieldi_y : {
-         centering = ( true, false, true );
-     };
-     bfieldi_z : {
-         centering = ( true, true, false );
-     };
      ghost_depth = 4;
-     list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfieldi_x", "bfieldi_y", "bfieldi_z", "bfield_x", "bfield_y", "bfield_z", "pressure" );
+     list = ( "density", "velocity_x", "velocity_y", "total_energy", "internal_energy", "pressure" );
+ }
+
+ Group : {
+     conserved : {
+         field_list = ( "density", "internal_energy", "total_energy", "velocity_x", "velocity_y" );
+     };
+     list = ( "conserved", "make_field_conservative" );
+     make_field_conservative : {
+         field_list = ( "velocity_x", "velocity_y", "internal_energy", "total_energy" );
+     };
  }
 
  Initial : {
-     kelvin_helmholtz : {
-         M_b = 1.000000000000000;
-         density_contrast = 100.0000000000000;
-         n_0 = 0.01000000000000000;
-         noisy_ic = false;
-         radius = 3.000000000000000;
-         random_seed = 12345;
-         temperature = 15000.00000000000;
-         vel_pert = 0.01000000000000000;
-     };
-     list = ( "kelvin_helmholtz", "vlct_bfield" );
-     vlct_bfield : {
-         Ax = ( 0.000000000000000 );
-         Ay = ( " -0.2450980390625000  *  z " );
-         Az = ( " 0.2450980390625000  *  y " );
-         update_etot = true;
+     list = ( "value" );
+     value : {
+         density = ( 1.000000000000000, "((((((( 0.2000000000000000  <  x ) && ( x  <  0.3000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 )) || (((( 0.4000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 ))) || (((( 0.6000000000000000  <  x ) && ( x  <  0.7000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.5000000000000000 ))) || (((( 0.2000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.4500000000000000  <  y )) && ( y  <  0.5500000000000000 ))) || (((( x  -  0.6500000000000000 ) * ( x  -  0.6500000000000000 )) + (( y  -  0.6000000000000000 ) * ( y  -  0.6000000000000000 ))) <  0.002500000000000000 )", 0.1250000000000000 );
+         total_energy = ( 2.500000000000000, "((((((( 0.2000000000000000  <  x ) && ( x  <  0.3000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 )) || (((( 0.4000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 ))) || (((( 0.6000000000000000  <  x ) && ( x  <  0.7000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.5000000000000000 ))) || (((( 0.2000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.4500000000000000  <  y )) && ( y  <  0.5500000000000000 ))) || (((( x  -  0.6500000000000000 ) * ( x  -  0.6500000000000000 )) + (( y  -  0.6000000000000000 ) * ( y  -  0.6000000000000000 ))) <  0.002500000000000000 )", 3.500000000000000 );
+         velocity_x = 0.000000000000000;
+         velocity_y = 0.000000000000000;
      };
  }
 
  Mesh : {
-     root_blocks = ( 2, 2, 2 );
-     root_rank = 3;
-     root_size = ( 128, 128, 128 );
+     root_blocks = ( 4, 4 );
+     root_rank = 2;
+     root_size = ( 80, 80 );
  }
 
  Method : {
-     check : {
-         dir = ( "check-%02d", "cycle" );
-         include_ghosts = false;
-         num_files = 8;
-         ordering = "order_morton";
-         schedule : {
-             start = 100;
-             step = 500;
-             var = "cycle";
-         };
-     };
-     list = ( "mhd_vlct" );
-     mhd_vlct : {
-         courant = 0.4000000000000000;
-         mhd_choice = "constrained_transport";
-         reconstruct_method = "plm";
-         riemann_solver = "hlld";
-         theta_limiter = 2.000000000000000;
-         time_scheme = "vl";
-     };
-     order_morton : {
-         schedule : {
-             start = 100;
-             step = 500;
-             var = "cycle";
-         };
-     };
+     list = ( "ppm", "flux_correct" );
      ppm : {
          courant = 0.8000000000000000;
          diffusion = true;
@@ -96,37 +59,46 @@
      };
  }
 
- Monitor : {
-     debug = false;
-     verbose = true;
- }
-
  Output : {
-     hdf5 : {
-         dir = ( "KH-MHD-%04d", "count" );
-         field_list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "bfield_x", "bfield_y", "bfield_z" );
-         name = ( "KH-MHD-%02d-%02d.h5", "proc", "count" );
-         schedule : {
-             start = 0.000000000000000;
-             step = 3.000000000000000;
-             var = "time";
-         };
-         type = "data";
-     };
-     image : {
-         axis = "y";
-         colormap = ( "black", "white" );
-         dir = "MHD";
+     density : {
+         colormap = ( "black", "blue", "cyan", "lime", "yellow", "red" );
          field_list = ( "density" );
-         name = ( "KH-MHD%02d.png", "count" );
+         image_size = ( 640, 640 );
+         image_type = "data";
+         name = ( "hi-de-%04d.png", "count" );
          schedule : {
-             start = 0.000000000000000;
-             step = 3.000000000000000;
-             var = "time";
+             step = 10;
+             var = "cycle";
          };
          type = "image";
      };
-     list = ( "image", "hdf5" );
+     list = ( "density", "mesh_age", "mesh_level" );
+     mesh_age : {
+         colormap = ( "black", "red", "yellow", "white" );
+         image_max = 1.000000000000000;
+         image_mesh_color = "age";
+         image_min = 0.000000000000000;
+         image_size = ( 641, 641 );
+         image_type = "mesh";
+         name = ( "hi-mesh-age-%04d.png", "count" );
+         schedule : {
+             step = 10;
+             var = "cycle";
+         };
+         type = "image";
+     };
+     mesh_level : {
+         colormap = ( "black", "blue", "cyan", "lime", "yellow", "red" );
+         image_mesh_color = "level";
+         image_size = ( 641, 641 );
+         image_type = "mesh";
+         name = ( "hi-mesh-level-%04d.png", "count" );
+         schedule : {
+             step = 10;
+             var = "cycle";
+         };
+         type = "image";
+     };
  }
 
  Physics : {
@@ -135,24 +107,13 @@
              type = "disabled";
          };
          eos : {
-             gamma = 1.666666666667000;
+             gamma = 1.400000000000000;
              type = "ideal";
          };
-         floors : {
-             density = 1.000000000000000e-10;
-             pressure = 1.000000000000000e-10;
-         };
-         mol_weight = 0.6000000000000000;
      };
      list = ( "fluid_props" );
  }
 
  Stopping : {
-     time = 464.0000000000000;
- }
-
- Units : {
-     length = 3.085677580962325e+21;
-     mass = 2.950087901621280e+36;
-     time = 214898975307947.4;
+     time = 0.1000000000000000;
  }

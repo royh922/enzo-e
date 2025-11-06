@@ -10,7 +10,7 @@
 /// - Mass unit: Hydrogen atom mass (m_H = 1.673e-24 g)
 /// - Length unit: kpc (3.086e21 cm)
 /// - Time unit: derived from length and velocity units
-/// - Temperature unit: 10^4 K
+/// - Temperature unit: 1 K
 /// - Number density: cm^-3
 /// - Mass density: number density * molecular weight (in code units)
 
@@ -169,7 +169,7 @@ void EnzoInitialKelvinHelmholtz::enforce_block(Block* block, const Hierarchy* hi
                         for (int m = 0; m <= 1; m++) {
                            // double random_phase = ((double)std::rand() / RAND_MAX) * 2.0 * pi;
                             // divide by 32.0 because box length is 32.0
-			    mode_sum += std::cos(2.0 * pi * k * x / 32.0 + m * phi);
+			                mode_sum += std::cos(2.0 * pi * k * x / 32.0 + m * phi);
                         }
                     }
                     mode_sum *= std::exp(-std::pow((r - radius_) / (radius_ / 16.0), 2)); // Gaussian 
