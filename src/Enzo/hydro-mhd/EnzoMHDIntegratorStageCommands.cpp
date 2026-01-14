@@ -21,7 +21,9 @@ EnzoMHDIntegratorStageCommands::EnzoMHDIntegratorStageCommands
     reconstructors_(),
     integration_quan_updater_(nullptr),
     mhd_choice_(EnzoMHDIntegratorStageCommands::parse_bfield_choice_
-                (args.mhd_choice))
+                (args.mhd_choice)),
+    viscosity_nu_(args.viscosity_nu),
+    thermal_kappa_(args.thermal_kappa)
 {
   // check compatability with EnzoPhysicsFluidProps
   EnzoPhysicsFluidProps* fluid_props = enzo::fluid_props();
@@ -50,7 +52,7 @@ EnzoMHDIntegratorStageCommands::EnzoMHDIntegratorStageCommands
   str_vec_t primitive_field_list
     = riemann_solver_->primitive_quantity_keys();
 
-  // Initialize the remaining component objects
+  // Initialize the remaining Component objects
   const enzo_float theta_limiter = static_cast<enzo_float>(args.theta_limiter);
   for (const std::string& name : args.recon_names) {
     std::unique_ptr<EnzoReconstructor> temp
@@ -179,7 +181,8 @@ void EnzoMHDIntegratorStageCommands::compute_update_stage
 
   // Compute the source terms (use them to update dUcons_group)
   compute_source_terms_(cur_dt, (stage_index == 1), tstep_begin_integration_map,
-                        primitive_map, accel_map, dUcons_map, stale_depth);
+                        primitive_map, accel_map, dUcons_map, stale_depth,
+                        cell_widths_xyz);
 
   // Update Bfields
   if (bfield_method_ != nullptr) {
@@ -267,13 +270,217 @@ void EnzoMHDIntegratorStageCommands::compute_source_terms_
  const EnzoEFltArrayMap &orig_integration_map,
  const EnzoEFltArrayMap &primitive_map,
  const EnzoEFltArrayMap &accel_map,
- EnzoEFltArrayMap &dUcons_map,  const int stale_depth) const noexcept
+ EnzoEFltArrayMap &dUcons_map,  const int stale_depth,
+ const std::array<enzo_float,3> cell_widths_xyz) const noexcept
 {
   // As we add more source terms, we may want to store them in a std::vector
   // instead of manually invoking them
 
   // add any source-terms that are used for partial and full timesteps
-  // (there aren't any right now...)
+  
+  // --- Unsplit Diffusion Terms ---
+  // Apply isotropic viscosity and/or thermal conduction using a flux-conservative
+  // approach to ensure better conservation and stability. 
+  // Stale_depth handling ensures we don't read from invalid ghost zones.
+
+  if ((viscosity_nu_ > 0.0) || (thermal_kappa_ > 0.0)){
+
+    // Load fields. We access primitives for calculation and dUcons for updates.
+    // Primitives should be valid up to `stale_depth` from the boundary.
+    CelloView<const enzo_float, 3> rho = primitive_map.get("density", stale_depth);
+    CelloView<const enzo_float, 3> vx  = primitive_map.get("velocity_x", stale_depth);
+    CelloView<const enzo_float, 3> vy  = primitive_map.get("velocity_y", stale_depth);
+    CelloView<const enzo_float, 3> vz  = primitive_map.get("velocity_z", stale_depth);
+    CelloView<const enzo_float, 3> p   = primitive_map.get("pressure", stale_depth);
+
+    // Accumulators
+    EFlt3DArray dU_vx = dUcons_map.get("velocity_x", stale_depth);
+    EFlt3DArray dU_vy = dUcons_map.get("velocity_y", stale_depth);
+    EFlt3DArray dU_vz = dUcons_map.get("velocity_z", stale_depth);
+    
+    // We always update total energy with diffusion (viscous heating or heat flux)
+    EFlt3DArray dU_etot = dUcons_map.get("total_energy", stale_depth);
+    
+    // Check if we need to update internal energy (dual energy formalism)
+    bool use_dual_energy = enzo::fluid_props()->dual_energy_config().any_enabled();
+    EFlt3DArray dU_eint;
+    if (use_dual_energy) {
+       dU_eint = dUcons_map.get("internal_energy", stale_depth);
+    }
+
+    // Check dimensions based on shapes of the array
+    int mz = rho.shape(0);
+    int my = rho.shape(1);
+    int mx = rho.shape(2);
+
+    // Geometry
+    const enzo_float idx = (mx > 1) ? 1.0 / cell_widths_xyz[0] : 0.0;
+    const enzo_float idy = (my > 1) ? 1.0 / cell_widths_xyz[1] : 0.0;
+    const enzo_float idz = (mz > 1) ? 1.0 / cell_widths_xyz[2] : 0.0;
+    const enzo_float idx2 = idx * idx;
+    const enzo_float idy2 = idy * idy;
+    const enzo_float idz2 = idz * idz;
+    enzo_float gm1 = 0.0;
+    if (enzo::fluid_props()->eos_variant().holds_alternative<EnzoEOSIdeal>()){
+       gm1 = enzo::fluid_props()->eos_variant().get<EnzoEOSIdeal>().gamma() - 1.0;
+    }
+
+    // Determine loop bounds. 
+    // If dimension N > 1, loop 1..N-1 (internal cells with ghost neighbors).
+    // If dimension N == 1, loop 0..1 (single cell, no derivatives).
+    int iz_start = (mz > 1) ? 1 : 0;
+    int iz_end   = (mz > 1) ? mz - 1 : 1;
+    int iy_start = (my > 1) ? 1 : 0;
+    int iy_end   = (my > 1) ? my - 1 : 1;
+    int ix_start = (mx > 1) ? 1 : 0;
+    int ix_end   = (mx > 1) ? mx - 1 : 1;
+
+    for (int iz = iz_start; iz < iz_end; iz++) {
+      for (int iy = iy_start; iy < iy_end; iy++) {
+        for (int ix = ix_start; ix < ix_end; ix++) {
+          
+          enzo_float rho_c = rho(iz,iy,ix);
+
+          // 1. Isotropic Viscosity (Navier-Stokes)
+          //    We implement a flux-conservative form: d/dt(rho*v) = div( mu * grad(v) )
+          //    where mu = rho * nu is assumed to be defined at cell centers.
+          //    We approximate mu at faces by arithmetic mean.
+          if (viscosity_nu_ > 0.0) {
+             
+             auto get_mu = [&](int k, int j, int i) -> enzo_float {
+                 return rho(k,j,i) * viscosity_nu_;
+             };
+
+             enzo_float mu_c = get_mu(iz,iy,ix);
+             
+             // Conservative 1D second derivative: d/dx ( mu * df/dx )
+             auto diff_term = [&](CelloView<const enzo_float, 3>& f) -> enzo_float {
+                 enzo_float term_x = 0.0;
+                 if (mx > 1) {
+                     enzo_float mu_r = 0.5 * (mu_c + get_mu(iz,iy,ix+1));
+                     enzo_float mu_l = 0.5 * (mu_c + get_mu(iz,iy,ix-1));
+                     term_x = (mu_r * (f(iz,iy,ix+1)-f(iz,iy,ix)) - 
+                               mu_l * (f(iz,iy,ix)-f(iz,iy,ix-1))) * idx2;
+                 }
+                 
+                 enzo_float term_y = 0.0;
+                 if (my > 1) {
+                     enzo_float mu_u = 0.5 * (mu_c + get_mu(iz,iy+1,ix));
+                     enzo_float mu_d = 0.5 * (mu_c + get_mu(iz,iy-1,ix));
+                     term_y = (mu_u * (f(iz,iy+1,ix)-f(iz,iy,ix)) - 
+                               mu_d * (f(iz,iy,ix)-f(iz,iy-1,ix))) * idy2;
+                 }
+
+                 enzo_float term_z = 0.0;
+                 if (mz > 1) {
+                     enzo_float mu_f = 0.5 * (mu_c + get_mu(iz+1,iy,ix)); // front
+                     enzo_float mu_b = 0.5 * (mu_c + get_mu(iz-1,iy,ix)); // back
+                     term_z = (mu_f * (f(iz+1,iy,ix)-f(iz,iy,ix)) - 
+                               mu_b * (f(iz,iy,ix)-f(iz-1,iy,ix))) * idz2;
+                 }
+
+                 return term_x + term_y + term_z;
+             };
+
+             enzo_float diff_vx = diff_term(vx);
+             enzo_float diff_vy = diff_term(vy);
+             enzo_float diff_vz = diff_term(vz);
+
+             // Update conserved momentum
+             dU_vx(iz,iy,ix) += cur_dt * diff_vx;
+             dU_vy(iz,iy,ix) += cur_dt * diff_vy;
+             dU_vz(iz,iy,ix) += cur_dt * diff_vz;
+             
+             // Viscous energy terms (only for Ideal EOS)
+             // Total Energy Source: div( v . (mu grad v) ) 
+             //                    = v . div(mu grad v) + mu |grad v|^2
+             // The first term is v_i * diff_vi. The second is dissipation.
+             if (enzo::fluid_props()->eos_variant().holds_alternative<EnzoEOSIdeal>()){
+                
+                // Work term: v . diffusion_force
+                enzo_float v_dot_diff = vx(iz,iy,ix)*diff_vx + 
+                                        vy(iz,iy,ix)*diff_vy + 
+                                        vz(iz,iy,ix)*diff_vz;
+                
+                // Dissipation term: mu * |grad v|^2
+                // We use standard centered difference for grad v at cell center
+                auto grad_sq = [&](CelloView<const enzo_float, 3>& f) -> enzo_float {
+                    enzo_float dfdx = (mx > 1) ? (f(iz,iy,ix+1) - f(iz,iy,ix-1)) * 0.5 * idx : 0.0;
+                    enzo_float dfdy = (my > 1) ? (f(iz,iy+1,ix) - f(iz,iy-1,ix)) * 0.5 * idy : 0.0;
+                    enzo_float dfdz = (mz > 1) ? (f(iz+1,iy,ix) - f(iz-1,iy,ix)) * 0.5 * idz : 0.0;
+                    return dfdx*dfdx + dfdy*dfdy + dfdz*dfdz;
+                };
+                enzo_float grad_v_sq = grad_sq(vx) + grad_sq(vy) + grad_sq(vz);
+
+                // Total energy: d(rho*E)/dt += v.force + dissipation
+                dU_etot(iz,iy,ix) += cur_dt * (v_dot_diff + mu_c * grad_v_sq);
+
+                // Internal energy: only dissipation
+                if (use_dual_energy){
+                    dU_eint(iz,iy,ix) += cur_dt * mu_c * grad_v_sq;
+                }
+             }
+          }
+
+          // 2. Thermal Conduction (Fourier's Law)
+          //    Flux-conservative form: d/dt(rho*e) = div( rho * kappa * grad(e) )
+          //    Here 'chi = thermal_kappa' is thermal diffusivity [L^2/T]
+          //    So effective coefficient alpha = rho * chi
+          if ((thermal_kappa_ > 0.0) && 
+              enzo::fluid_props()->eos_variant().holds_alternative<EnzoEOSIdeal>()) {
+             
+             // Specific internal energy
+             auto specific_e = [&](int k, int j, int i) -> enzo_float {
+                 return p(k,j,i) / (rho(k,j,i) * gm1);
+             };
+             
+             enzo_float e_c = specific_e(iz,iy,ix);
+
+             auto get_alpha = [&](int k, int j, int i) -> enzo_float {
+                 return rho(k,j,i) * thermal_kappa_;
+             };
+             
+             enzo_float alpha_c = get_alpha(iz,iy,ix);
+
+             // d/dt(rho*e) = div( alpha * grad(e) )
+             // Using same conservative stencil
+             
+             enzo_float term_x = 0.0;
+             if (mx > 1) {
+                 enzo_float alpha_r = 0.5 * (alpha_c + get_alpha(iz,iy,ix+1));
+                 enzo_float alpha_l = 0.5 * (alpha_c + get_alpha(iz,iy,ix-1));
+                 term_x = (alpha_r * (specific_e(iz,iy,ix+1)-e_c) - 
+                           alpha_l * (e_c-specific_e(iz,iy,ix-1))) * idx2;
+             }
+             
+             enzo_float term_y = 0.0;
+             if (my > 1) {
+                 enzo_float alpha_u = 0.5 * (alpha_c + get_alpha(iz,iy+1,ix));
+                 enzo_float alpha_d = 0.5 * (alpha_c + get_alpha(iz,iy-1,ix));
+                 term_y = (alpha_u * (specific_e(iz,iy+1,ix)-e_c) - 
+                           alpha_d * (e_c-specific_e(iz,iy-1,ix))) * idy2;
+             }
+
+             enzo_float term_z = 0.0;
+             if (mz > 1) {
+                 enzo_float alpha_f = 0.5 * (alpha_c + get_alpha(iz+1,iy,ix));
+                 enzo_float alpha_b = 0.5 * (alpha_c + get_alpha(iz-1,iy,ix));
+                 term_z = (alpha_f * (specific_e(iz+1,iy,ix)-e_c) - 
+                           alpha_b * (e_c-specific_e(iz-1,iy,ix))) * idz2;
+             }
+
+             enzo_float dE = cur_dt * (term_x + term_y + term_z);
+             
+             dU_etot(iz,iy,ix) += dE;
+             if (use_dual_energy) {
+               dU_eint(iz,iy,ix) += dE;
+             }
+          }
+
+        }
+      }
+    }
+  }
 
   // add any source-terms that are only included for full-timestep
   if (full_timestep & (accel_map.size() != 0)){
@@ -360,6 +567,28 @@ double EnzoMHDIntegratorStageCommands::timestep
       };
     enzo_utils::exec_loop(density.shape(0), density.shape(1), density.shape(2),
                           0, loop_body);
+  }
+
+  // Check diffusion stability limits: dt < 0.5 * dx^2 / coeff
+  if (viscosity_nu_ > 0.0 || thermal_kappa_ > 0.0) {
+     double max_coeff = 0.0;
+     if (viscosity_nu_ > 0.0) max_coeff = std::max(max_coeff, viscosity_nu_);
+     if (thermal_kappa_ > 0.0) max_coeff = std::max(max_coeff, thermal_kappa_);
+     
+     int mz = density.shape(0);
+     int my = density.shape(1);
+     int mx = density.shape(2);
+
+     // Simplest multi-D limit: dt < 0.3 / (coeff * sum(1/dx^2))
+     double inv_d2_sum = 0.0;
+     if (mx > 1) inv_d2_sum += 1.0/(dx*dx);
+     if (my > 1) inv_d2_sum += 1.0/(dy*dy);
+     if (mz > 1) inv_d2_sum += 1.0/(dz*dz);
+     
+     if (inv_d2_sum > 0.0) {
+         double dt_diff = 0.3 / (max_coeff * inv_d2_sum); 
+         dtBaryons = std::min(dtBaryons, dt_diff);
+     }
   }
 
   return dtBaryons; // courant factor is handled separately!

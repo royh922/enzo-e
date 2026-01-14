@@ -29,12 +29,16 @@ struct EnzoMHDIntegratorStageArgPack {
   std::vector<std::string> recon_names;
   double theta_limiter;
   std::string mhd_choice;
+  double viscosity_nu;
+  double thermal_kappa;
 
   void pup(PUP::er &p) {
     p | rsolver;
     p | recon_names;
     p | theta_limiter;
     p | mhd_choice;
+    p | viscosity_nu;
+    p | thermal_kappa;
   }
 };
 
@@ -143,6 +147,12 @@ public:
   /// query whether the integrator is configured for pure hydrodynamics
   bool is_pure_hydro() const noexcept
   { return mhd_choice_ == bfield_choice::no_bfield; }
+
+  /// returns the kinematic viscosity coefficient
+  double viscosity_nu() const noexcept { return viscosity_nu_; }
+
+  /// returns the thermal conductivity coefficient
+  double thermal_kappa() const noexcept { return thermal_kappa_; }
 
   /// main workhorse: actually execute a single stage of the MHD integrator.
   ///
@@ -364,7 +374,8 @@ protected:
    const EnzoEFltArrayMap &orig_integration_map,
    const EnzoEFltArrayMap &primitive_map,
    const EnzoEFltArrayMap &accel_map,
-   EnzoEFltArrayMap &dU_cons, const int stale_depth) const noexcept;
+   EnzoEFltArrayMap &dU_cons, const int stale_depth,
+   const std::array<enzo_float,3> cell_widths_xyz) const noexcept;
 
 private:
   /// Pointer to the Riemann solver
@@ -373,6 +384,12 @@ private:
   // vector of pointers to reconstructors (the different choices correspond to
   // different stages)
   std::vector<std::unique_ptr<EnzoReconstructor>> reconstructors_;
+
+  /// Kinematic viscosity coefficient (nu)
+  double viscosity_nu_;
+
+  /// Thermal conduction coefficient (kappa)
+  double thermal_kappa_;
 
   /// Pointer to the integration quantity updater
   const EnzoIntegrationQuanUpdate *integration_quan_updater_;
