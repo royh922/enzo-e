@@ -7,6 +7,7 @@
 add_library(Enzo_hydro-mhd_toolkit
   EnzoSourceInternalEnergy.cpp EnzoSourceInternalEnergy.hpp
   EnzoSourceGravity.cpp EnzoSourceGravity.hpp
+  EnzoSourceDiffusion.cpp EnzoSourceDiffusion.hpp
   EnzoLazyPassiveScalarFieldList.cpp EnzoLazyPassiveScalarFieldList.hpp
   EnzoBfieldMethod.cpp EnzoBfieldMethod.hpp
   EnzoBfieldMethodCT.cpp EnzoBfieldMethodCT.hpp
