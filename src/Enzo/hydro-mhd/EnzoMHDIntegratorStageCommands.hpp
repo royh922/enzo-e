@@ -365,6 +365,8 @@ protected:
   ///     integration quantities are accumulated.
   /// @param[in]     stale_depth indicates the current stale depth (before
   ///     performing reconstruction)
+  /// @param[in]     cell_widths_xyz holds the cell widths along the x, y, and
+  ///      dimensions, respectively. Used for diffusive source terms.
   ///
   /// @note
   /// The interface of this method will almost certainly need to be updated as

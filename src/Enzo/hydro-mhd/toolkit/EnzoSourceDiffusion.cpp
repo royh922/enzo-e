@@ -41,15 +41,15 @@ void EnzoSourceDiffusion::calculate_source(const double cur_dt, const EnzoEFltAr
     CelloView<const enzo_float, 3> p = primitive_map.at("pressure");
 
     // Accumulators for conserved quantity updates
-    CelloView<enzo_float, 3> dU_vx = dUcons_map.at("velocity_x");
-    CelloView<enzo_float, 3> dU_vy = dUcons_map.at("velocity_y");
-    CelloView<enzo_float, 3> dU_vz = dUcons_map.at("velocity_z");
-    CelloView<enzo_float, 3> dU_etot = dUcons_map.at("total_energy");
+    EFlt3DArray dU_vx = dUcons_map.at("velocity_x");
+    EFlt3DArray dU_vy = dUcons_map.at("velocity_y");
+    EFlt3DArray dU_vz = dUcons_map.at("velocity_z");
+    EFlt3DArray dU_etot = dUcons_map.at("total_energy");
 
     // Check if we need to update internal energy (dual energy formalism)
     // Cache this check to avoid repeated virtual calls
     const bool use_dual_energy = enzo::fluid_props()->dual_energy_config().any_enabled();
-    CelloView<enzo_float, 3> dU_eint;
+    EFlt3DArray dU_eint;
     if (use_dual_energy) {
         dU_eint = dUcons_map.at("internal_energy");
     }
