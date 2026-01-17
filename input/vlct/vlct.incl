@@ -8,6 +8,7 @@
       mhd_vlct{
         mhd_choice = "constrained_transport";
         riemann_solver = "hlld";
+        viscosity_nu = 0.1;
 	};
    }
 

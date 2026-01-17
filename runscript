@@ -1,1 +1,1 @@
-~/charm/netlrts-darwin-arm8/charmrun ++local +p8 local-test/bin/enzo-e ./input/HelloWorld/Hi.in
+~/charm/netlrts-darwin-arm8/charmrun ++local +p8 local-test/bin/enzo-e ./input/vlct/HD_linear_wave/method_vlct_hd_entropyN32.in

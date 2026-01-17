@@ -41,6 +41,7 @@
 #include "Enzo/hydro-mhd/toolkit/EnzoLazyPassiveScalarFieldList.hpp"
 #include "Enzo/hydro-mhd/toolkit/EnzoSourceGravity.hpp"
 #include "Enzo/hydro-mhd/toolkit/EnzoSourceInternalEnergy.hpp"
+#include "Enzo/hydro-mhd/toolkit/EnzoSourceDiffusion.hpp"
 
 // [order dependencies:]
 #include "Enzo/hydro-mhd/toolkit/EnzoBfieldMethod.hpp"

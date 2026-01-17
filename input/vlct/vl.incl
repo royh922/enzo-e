@@ -55,6 +55,7 @@
         # least dissipative and is the same as the MC limiter. The default
         # value is 1.5.
         theta_limiter = 2.;
+        viscosity_nu = 0.1;
       };
    }
 

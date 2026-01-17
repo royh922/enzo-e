@@ -1,119 +1,85 @@
- Adapt : {
-     list = ( "slope" );
-     max_level = 3;
-     slope : {
-         field_list = ( "density" );
-         max_coarsen = 2.000000000000000;
-         min_refine = 10.00000000000000;
-         type = "slope";
-     };
- }
-
  Boundary : {
-     type = "reflecting";
+     type = "periodic";
  }
 
  Domain : {
-     lower = ( 0.000000000000000, 0.000000000000000 );
-     upper = ( 1.000000000000000, 1.000000000000000 );
+     lower = ( 0.000000000000000, 0.000000000000000, 0.000000000000000 );
+     upper = ( 3.000000000000000, 1.500000000000000, 1.500000000000000 );
  }
 
  Field : {
-     ghost_depth = 4;
-     list = ( "density", "velocity_x", "velocity_y", "total_energy", "internal_energy", "pressure" );
+     alignment = 8;
+     courant = 0.4000000000000000;
+     ghost_depth = 3;
+     list = ( "density", "velocity_x", "velocity_y", "velocity_z", "total_energy", "pressure" );
+     padding = 0;
  }
 
  Group : {
-     conserved : {
-         field_list = ( "density", "internal_energy", "total_energy", "velocity_x", "velocity_y" );
+     derived : {
+         field_list = ( "pressure" );
      };
-     list = ( "conserved", "make_field_conservative" );
-     make_field_conservative : {
-         field_list = ( "velocity_x", "velocity_y", "internal_energy", "total_energy" );
-     };
+     list = ( "derived" );
  }
 
  Initial : {
-     list = ( "value" );
-     value : {
-         density = ( 1.000000000000000, "((((((( 0.2000000000000000  <  x ) && ( x  <  0.3000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 )) || (((( 0.4000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 ))) || (((( 0.6000000000000000  <  x ) && ( x  <  0.7000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.5000000000000000 ))) || (((( 0.2000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.4500000000000000  <  y )) && ( y  <  0.5500000000000000 ))) || (((( x  -  0.6500000000000000 ) * ( x  -  0.6500000000000000 )) + (( y  -  0.6000000000000000 ) * ( y  -  0.6000000000000000 ))) <  0.002500000000000000 )", 0.1250000000000000 );
-         total_energy = ( 2.500000000000000, "((((((( 0.2000000000000000  <  x ) && ( x  <  0.3000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 )) || (((( 0.4000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.7000000000000000 ))) || (((( 0.6000000000000000  <  x ) && ( x  <  0.7000000000000000 )) && ( 0.3000000000000000  <  y )) && ( y  <  0.5000000000000000 ))) || (((( 0.2000000000000000  <  x ) && ( x  <  0.5000000000000000 )) && ( 0.4500000000000000  <  y )) && ( y  <  0.5500000000000000 ))) || (((( x  -  0.6500000000000000 ) * ( x  -  0.6500000000000000 )) + (( y  -  0.6000000000000000 ) * ( y  -  0.6000000000000000 ))) <  0.002500000000000000 )", 3.500000000000000 );
-         velocity_x = 0.000000000000000;
-         velocity_y = 0.000000000000000;
+     inclined_wave : {
+         alpha = 0.7297276562269663;
+         amplitude = 1.000000000000000e-06;
+         beta = 1.107148717794090;
+         lambda = 1.000000000000000;
+         positive_vel = true;
+         wave_type = "hd_entropy";
      };
+     list = ( "inclined_wave" );
  }
 
  Mesh : {
-     root_blocks = ( 4, 4 );
-     root_rank = 2;
-     root_size = ( 80, 80 );
+     root_blocks = ( 2, 2, 2 );
+     root_rank = 3;
+     root_size = ( 64, 32, 32 );
  }
 
  Method : {
-     list = ( "ppm", "flux_correct" );
-     ppm : {
-         courant = 0.8000000000000000;
-         diffusion = true;
-         flattening = 3;
-         steepening = true;
+     list = ( "mhd_vlct" );
+     mhd_vlct : {
+         courant = 0.4000000000000000;
+         mhd_choice = "no_bfield";
+         reconstruct_method = "plm";
+         riemann_solver = "hllc";
+         theta_limiter = 2.000000000000000;
+         time_scheme = "vl";
+         viscosity_nu = 0.1000000000000000;
      };
  }
 
  Output : {
-     density : {
-         colormap = ( "black", "blue", "cyan", "lime", "yellow", "red" );
-         field_list = ( "density" );
-         image_size = ( 640, 640 );
-         image_type = "data";
-         name = ( "hi-de-%04d.png", "count" );
+     data : {
+         dir = ( "method_vlct-1-hd_entropyN32_%.1f", "time" );
+         field_list = ( "density", "velocity_x", "velocity_y", "velocity_z", "pressure", "total_energy" );
+         name = ( "data-%03d.h5", "proc" );
          schedule : {
-             step = 10;
-             var = "cycle";
+             list = ( 0.000000000000000, 1.000000000000000 );
+             var = "time";
          };
-         type = "image";
+         type = "data";
      };
-     list = ( "density", "mesh_age", "mesh_level" );
-     mesh_age : {
-         colormap = ( "black", "red", "yellow", "white" );
-         image_max = 1.000000000000000;
-         image_mesh_color = "age";
-         image_min = 0.000000000000000;
-         image_size = ( 641, 641 );
-         image_type = "mesh";
-         name = ( "hi-mesh-age-%04d.png", "count" );
-         schedule : {
-             step = 10;
-             var = "cycle";
-         };
-         type = "image";
-     };
-     mesh_level : {
-         colormap = ( "black", "blue", "cyan", "lime", "yellow", "red" );
-         image_mesh_color = "level";
-         image_size = ( 641, 641 );
-         image_type = "mesh";
-         name = ( "hi-mesh-level-%04d.png", "count" );
-         schedule : {
-             step = 10;
-             var = "cycle";
-         };
-         type = "image";
-     };
+     list = ( "data" );
  }
 
  Physics : {
      fluid_props : {
-         dual_energy : {
-             type = "disabled";
-         };
          eos : {
-             gamma = 1.400000000000000;
-             type = "ideal";
+             gamma = 1.666666666666667;
+         };
+         floors : {
+             density = 1.000000000000000e-200;
+             pressure = 1.000000000000000e-200;
          };
      };
      list = ( "fluid_props" );
  }
 
  Stopping : {
-     time = 0.1000000000000000;
+     time = 1.000000000000000;
  }

@@ -85,7 +85,7 @@ void EnzoSourceDiffusion::calculate_source(const double cur_dt, const EnzoEFltAr
     enzo_float gm1 = 0.0;
     enzo_float inv_gm1 = 0.0;
     if (ideal_eos) {
-        gm1 = enzo::fluid_props()->eos_variant().get<EnzoEOSIdeal>().gamma() - 1.0;
+        gm1 = 5.0/3.0 - 1.0;
         inv_gm1 = 1.0 / gm1;
     }
 

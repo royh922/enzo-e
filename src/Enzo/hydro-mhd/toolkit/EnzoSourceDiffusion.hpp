@@ -11,10 +11,6 @@
 #ifndef ENZO_ENZO_SOURCE_DIFFUSION_HPP
 #define ENZO_ENZO_SOURCE_DIFFUSION_HPP
 
-#include "Enzo/utils/enzo_float.hpp"
-#include "Enzo/hydro-mhd/utils/EnzoEFltArrayMap.hpp"
-#include <array>
-
 class EnzoSourceDiffusion
 {
   /// @class    EnzoSourceDiffusion
